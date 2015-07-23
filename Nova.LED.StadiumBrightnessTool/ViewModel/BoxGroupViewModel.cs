@@ -1,5 +1,6 @@
 ﻿using Microsoft.Practices.Prism.Mvvm;
-using Nova.LED.StadiumBrightnessTool.Model;
+using Nova.LED.Infrastructure.Interfaces;
+using Nova.LED.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,9 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
     {
         private LEDBoxGroup _boxGroup;
 
-        public BoxGroupViewModel(LEDBoxGroup boxGroup)
+        public BoxGroupViewModel(LEDBoxGroup boxGroup, ILEDBoxService boxService)
         {
-
+            _boxGroup = boxGroup;
         }
 
 
@@ -33,13 +34,13 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
         {
             get
             {
-                return _indexLocation;
+                return string.Format("{0}-S{1}-P{2}", _boxGroup.COMIndex, _boxGroup.SenderIndex, _boxGroup.PortIndex);
             }
 
-            set
-            {
-                SetProperty(ref _indexLocation, value);
-            }
+            //set
+            //{
+            //    SetProperty(ref _indexLocation, value);
+            //}
         }
 
         /// <summary>
@@ -57,13 +58,12 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
         {
             get
             {
-                return _boxCount;
+                return _boxGroup.Boxes.Count;
             }
-
-            set
-            {
-                SetProperty(ref _boxCount, value);
-            }
+            //set
+            //{
+            //    SetProperty(ref _boxCount, value);
+            //}
         }
 
 

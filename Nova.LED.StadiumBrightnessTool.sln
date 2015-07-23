@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nova.LED.Infrastructure", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nova.LED.Modules.Box", "Nova.LED.Modules.Box\Nova.LED.Modules.Box.csproj", "{AA1FED37-B6E5-4816-BF9A-2EAF17D1C6D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nova.LED.Modules.Splash", "Nova.LED.Modules.Splash\Nova.LED.Modules.Splash.csproj", "{560693FE-1A27-4496-A281-9C88DC153CC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{AA1FED37-B6E5-4816-BF9A-2EAF17D1C6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA1FED37-B6E5-4816-BF9A-2EAF17D1C6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA1FED37-B6E5-4816-BF9A-2EAF17D1C6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{560693FE-1A27-4496-A281-9C88DC153CC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{560693FE-1A27-4496-A281-9C88DC153CC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{560693FE-1A27-4496-A281-9C88DC153CC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{560693FE-1A27-4496-A281-9C88DC153CC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

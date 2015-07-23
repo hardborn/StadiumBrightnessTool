@@ -16,13 +16,13 @@ namespace Nova.LED.StadiumBrightnessTool
             return this.Container.GetExportedValue<Shell>();
         }
 
-        protected override void InitializeShell()
-        {
-            base.InitializeShell();
+        //protected override void InitializeShell()
+        //{
+        //    base.InitializeShell();
 
-            Application.Current.MainWindow = (Shell)this.Shell;
-            Application.Current.MainWindow.Show();
-        }
+        //    Application.Current.MainWindow = (Shell)this.Shell;
+        //    Application.Current.MainWindow.Show();
+        //}
 
         protected override void ConfigureAggregateCatalog()
         {
@@ -31,7 +31,16 @@ namespace Nova.LED.StadiumBrightnessTool
 
         protected override void ConfigureContainer()
         {
+            
             base.ConfigureContainer();
+        }
+
+        protected override void InitializeModules()
+        {            
+            base.InitializeModules();
+            var shell = this.Container.GetExportedValue<Shell>();
+            Application.Current.MainWindow = (Shell)this.Shell;
+            Application.Current.MainWindow.Show();
         }
     }
 }

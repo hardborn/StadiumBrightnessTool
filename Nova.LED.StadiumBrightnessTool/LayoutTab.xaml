@@ -11,7 +11,7 @@
         <mui:ModernTab Layout="Tab" SelectedSource="/LocationProfileView.xaml">
             <mui:ModernTab.Links>
                 <mui:Link DisplayName="配置模式" Source="/LocationProfileView.xaml" />
-                <mui:Link DisplayName="调节模式" Source="" />
+                <mui:Link DisplayName="调节模式" Source="/BrightnessAdjustmentView.xaml" />
             </mui:ModernTab.Links>
         </mui:ModernTab>
     </Grid>

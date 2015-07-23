@@ -72,6 +72,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="BrightnessAdjustmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\BoxGroupSummaryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -92,10 +100,31 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\LEDBox.cs" />
+    <Compile Include="BrightnessAdjustmentView.xaml.cs">
+      <DependentUpon>BrightnessAdjustmentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DesignerCanvas\Connection.cs" />
+    <Compile Include="Controls\DesignerCanvas\Connector.cs" />
+    <Compile Include="Controls\DesignerCanvas\DesignerCanvas.cs" />
+    <Compile Include="Controls\DesignerCanvas\DesignerItem.cs" />
+    <Compile Include="Controls\DesignerCanvas\DragThumb.cs" />
+    <Compile Include="Controls\DesignerCanvas\PathFinder.cs" />
+    <Compile Include="Controls\DesignerCanvas\RubberbandAdorner.cs" />
+    <Compile Include="Controls\DesignerCanvas\SelectionService.cs" />
+    <Compile Include="Controls\DesignerCanvas\ISelectable.cs" />
+    <Compile Include="Controls\LEDBoxGroupTool.cs" />
+    <Compile Include="Controls\LEDBoxGroupToolItem.cs" />
+    <Compile Include="Controls\ZoomableCanvas\LinkedListExtensions.cs" />
+    <Compile Include="Controls\ZoomableCanvas\MathExtensions.cs" />
+    <Compile Include="Controls\ZoomableCanvas\PriorityQuadTree.cs" />
+    <Compile Include="Controls\ZoomableCanvas\PriorityQueue.cs" />
+    <Compile Include="Controls\ZoomableCanvas\RectExtensions.cs" />
+    <Compile Include="Controls\ZoomableCanvas\VirtualPanel.cs" />
+    <Compile Include="Controls\ZoomableCanvas\ZoomableCanvas.cs" />
+    <Compile Include="DragObject.cs" />
     <Compile Include="StadiumBrightnessBootstrapper.cs" />
     <Compile Include="ViewModel\BoxGroupViewModel.cs" />
-    <Compile Include="Model\LEDBoxGroup.cs" />
+    <Compile Include="ViewModel\LocationProfileViewModel.cs" />
     <Compile Include="View\BoxGroupSummaryView.xaml.cs">
       <DependentUpon>BoxGroupSummaryView.xaml</DependentUpon>
     </Compile>
@@ -138,6 +167,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nova.LED.Infrastructure\Nova.LED.Infrastructure.csproj">
+      <Project>{19cfb22c-923a-4f1b-8def-46fa3f32d151}</Project>
+      <Name>Nova.LED.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nova.LED.Modules.Box\Nova.LED.Modules.Box.csproj">
       <Project>{aa1fed37-b6e5-4816-bf9a-2eaf17d1c6d8}</Project>
       <Name>Nova.LED.Modules.Box</Name>

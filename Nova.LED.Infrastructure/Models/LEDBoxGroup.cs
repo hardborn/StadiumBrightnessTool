@@ -9,6 +9,7 @@ namespace Nova.LED.Infrastructure.Models
     {
         private string _id;
         private string _indexLocation;
+        private string _COMIndex;
         private ushort _senderIndex;
         private ushort _portIndex;
         private List<LEDBox> _boxes;
@@ -29,6 +30,16 @@ namespace Nova.LED.Infrastructure.Models
             set { _indexLocation = value; }
         }
 
+
+        public string COMIndex
+        {
+            get { return _COMIndex; }
+            set
+            {
+                _COMIndex = value;
+            }
+
+        }
         public ushort SenderIndex
         {
             get { return _senderIndex; }
