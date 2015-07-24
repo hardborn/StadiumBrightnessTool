@@ -11,6 +11,7 @@ namespace Nova.LED.StadiumBrightnessTool
 {
     public class StadiumBrightnessBootstrapper:MefBootstrapper
     {
+
         protected override DependencyObject CreateShell()
         {
             return this.Container.GetExportedValue<Shell>();
