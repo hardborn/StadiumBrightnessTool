@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Nova.LED.Infrastructure.Interfaces;
+using Nova.LED.Modules.Splash.ViewModel;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,16 +16,20 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Nova.LED.Modules.Splash
+namespace Nova.LED.Modules.Splash.View
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// SplashView.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    [Export]
+    public partial class SplashView : Window
     {
-        public MainWindow()
+        [ImportingConstructor]
+        public SplashView(SplashViewModel viewModel)
         {
             InitializeComponent();
+            this.DataContext = viewModel;
         }
+     
     }
 }

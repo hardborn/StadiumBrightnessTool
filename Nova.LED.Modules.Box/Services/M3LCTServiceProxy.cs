@@ -4,8 +4,11 @@ using Nova.Message.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -18,10 +21,13 @@ namespace Nova.LED.Modules.Box.Services
         private ILCTServerBaseProxy _serverProxy = null;
         private readonly string SERVER_NAME = "MarsServerProvider";
         private readonly string SERVER_FORM_NAME = "A7F89E4D-04F4-46a6-9754-A334B3E8FEE5";
+        private readonly string SERVER_PATH = AppDomain.CurrentDomain.BaseDirectory + "..\\MarsServerProvider\\MarsServerProvider.exe";
 
-
-        private void InitalizeServerProxy()
+        public void InitalizeServerProxy()
         {
+
+            StartServer();
+
             Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
             {
                 try
@@ -40,12 +46,33 @@ namespace Nova.LED.Modules.Box.Services
                     //_serverProxy.CompleteConnectAllController += OnCompleteConnectAllController;
                     _serverProxy.EquipmentChangeEvent += OnEquipmentChangeEvent;
 
+                    if (RegisterToServer())
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
                 }
                 catch (Exception ex)
                 {
                     //_fLogService.Error("ExistCatch：Mars Initalize Server exception：" + ex.ToString());
                 }
             }));
+        }
+
+        private void StartServer()
+        {
+            Process[] processList = Process.GetProcessesByName(SERVER_NAME);
+            if (processList == null || processList.Length == 0)
+            {
+                if (File.Exists(SERVER_PATH))
+                {
+                    Process.Start(SERVER_PATH);
+                    Thread.Sleep(3000);
+                }
+            }
         }
 
         private void OnCompleteConnectAllController(object sender, EventArgs e)
@@ -104,7 +131,7 @@ namespace Nova.LED.Modules.Box.Services
             try
             {
                 res = ((LCTServerMessageProxy)_serverProxy).Register(SERVER_FORM_NAME, out serverVer);
-            
+
                 //string msg = "连接服务结果：" + res.ToString();
                 //_fLogService.Info(msg);
                 if (res)
@@ -129,7 +156,7 @@ namespace Nova.LED.Modules.Box.Services
 
         private HWSoftwareSpaceRes LoadAllComBaseInfoFromHW()
         {
-            AllCOMHWBaseInfoAccessor accessor = new AllCOMHWBaseInfoAccessor(_serverProxy);;
+            AllCOMHWBaseInfoAccessor accessor = new AllCOMHWBaseInfoAccessor(_serverProxy); ;
             HWSoftwareSpaceRes res = accessor.ReadAllComHWBaseInfo(ReadAllComBaseInfoCompleted, null);
             return res;
         }
@@ -142,13 +169,13 @@ namespace Nova.LED.Modules.Box.Services
                 return;
             }
 
-           var currentCOMAndHWBaseInfo =  allBaseInfo.AllInfo.AllInfoDict.ElementAt(0);
-           var currentHWBaseInfo = currentCOMAndHWBaseInfo.Value;
-           //currentHWBaseInfo.LEDDisplayInfoList;
-            
+            var currentCOMAndHWBaseInfo = allBaseInfo.AllInfo.AllInfoDict.ElementAt(0);
+            var currentHWBaseInfo = currentCOMAndHWBaseInfo.Value;
+            //currentHWBaseInfo.LEDDisplayInfoList;
+
         }
 
-        public void ReadCOMHWBaseInfoAsync(Action<CompleteReadAllComHWBaseInfoParams,object> callbackAction)
+        public void ReadCOMHWBaseInfoAsync(Action<CompleteReadAllComHWBaseInfoParams, object> callbackAction)
         {
             AllCOMHWBaseInfoAccessor accessor = new AllCOMHWBaseInfoAccessor(_serverProxy);
 
@@ -158,13 +185,14 @@ namespace Nova.LED.Modules.Box.Services
         public void SendRequestReadData(PackageRequestReadData requestData)
         {
             _serverProxy.SendRequestReadData(requestData);
-           
+
         }
 
         public void SendRequestWriteData(PackageRequestWriteData requestData)
         {
             _serverProxy.SendRequestWriteData(requestData);
         }
+
 
     }
 }

@@ -24,12 +24,12 @@
                        Margin="10,0,0,0"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
-                       Text="C1-S0-P2" />
+                       Text="{Binding IndexLocation}" />
             <TextBlock Grid.Row="1"
                        Margin="10,0,0,0"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
-                       Text="23" />
+                       Text="{Binding BoxCount}" />
         </Grid>
 
     </Grid>

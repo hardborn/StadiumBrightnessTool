@@ -6,6 +6,7 @@
                   Width="525"
                   Height="350"
                   ContentSource="/LayoutTab.xaml"
+                  WindowStartupLocation="CenterScreen"
                   IsTitleVisible="True">
     <!--<mui:ModernWindow.TitleLinks>
     -->

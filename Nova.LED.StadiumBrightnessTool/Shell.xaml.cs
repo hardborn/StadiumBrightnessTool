@@ -1,4 +1,5 @@
 ﻿using Hardborn.UI.MetroUI.Windows.Controls;
+using Nova.LED.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -20,8 +21,8 @@ namespace Nova.LED.StadiumBrightnessTool
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-     [Export]
-    public partial class Shell : ModernWindow
+     [Export(typeof(IShell))]
+    public partial class Shell : ModernWindow, IShell
     {
          public Shell()
         {

@@ -3,12 +3,14 @@ using Nova.LED.Infrastructure.Interfaces;
 using Nova.LED.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Nova.LED.StadiumBrightnessTool.ViewModel
 {
+    [Export]
     public class BoxGroupViewModel :BindableBase 
     {
         private LEDBoxGroup _boxGroup;
