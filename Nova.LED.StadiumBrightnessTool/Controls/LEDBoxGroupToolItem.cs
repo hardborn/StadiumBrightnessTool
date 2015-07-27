@@ -70,17 +70,17 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
             {
                 // XamlWriter.Save() has limitations in exactly what is serialized,
                 // see SDK documentation; short term solution only;
-                string xamlString = XamlWriter.Save(this.Content);
+                //string xamlString = XamlWriter.Save(this.Content);
                 DragObject dataObject = new DragObject();
-                dataObject.Xaml = xamlString;
+                dataObject.BusinessObject = this.Content;
 
-                StackPanel panel = VisualTreeHelper.GetParent(this) as StackPanel;
-                if (panel != null)
-                {
-                    // desired size for DesignerCanvas is the stretched Toolbox item size
-                    double scale = 1.3;
-                    dataObject.DesiredSize = new Size(50 * scale, 50 * scale);
-                }
+                //StackPanel panel = VisualTreeHelper.GetParent(this) as StackPanel;
+                //if (panel != null)
+                //{
+                //    // desired size for DesignerCanvas is the stretched Toolbox item size
+                //    double scale = 1.3;
+                //    dataObject.DesiredSize = new Size(50 * scale, 50 * scale);
+                //}
 
                 DragDrop.DoDragDrop(this, dataObject, DragDropEffects.Copy);
 

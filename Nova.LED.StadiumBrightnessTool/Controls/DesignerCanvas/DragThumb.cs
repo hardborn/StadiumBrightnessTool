@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -11,6 +12,14 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
         public DragThumb()
         {
             base.DragDelta += new DragDeltaEventHandler(DragThumb_DragDelta);
+        }
+
+        static DragThumb()
+        {
+            FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(
+                typeof(DragThumb), new FrameworkPropertyMetadata(typeof(DragThumb)));
+
+
         }
 
         void DragThumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -50,7 +59,7 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
                 }
 
                 designer.InvalidateMeasure();
-                e.Handled = true;
+                e.Handled = false;
             }
         }
     }

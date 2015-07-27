@@ -1,4 +1,6 @@
-﻿using Nova.LCT.Message.Client;
+﻿using Microsoft.Practices.Prism.PubSubEvents;
+using Nova.LCT.Message.Client;
+using Nova.LED.Infrastructure.Events;
 using Nova.LED.Infrastructure.Interfaces;
 using Nova.LED.Infrastructure.Models;
 using Nova.LED.Modules.Box.Services;
@@ -7,11 +9,13 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace Nova.LED.Modules.Box.Services
 {
+    [Export(typeof(ILEDBoxService))]
     public class LEDBoxService : ILEDBoxService
     {
 
@@ -19,16 +23,21 @@ namespace Nova.LED.Modules.Box.Services
         private List<LEDBox> _boxes = new List<LEDBox>();
 
         private M3LCTServiceProxy _LCTService;
+        private IEventAggregator _eventAggregator;
+
+        private AutoResetEvent _waitForReadData;
 
         [ImportingConstructor]
-        public LEDBoxService(M3LCTServiceProxy serviceProxy)
+        public LEDBoxService(M3LCTServiceProxy serviceProxy,IEventAggregator eventAggregator)
         {
             _LCTService = serviceProxy;
+            _eventAggregator = eventAggregator;
             InitializeLEDBox();
         }
 
-        private void InitializeLEDBox()
+        public void InitializeLEDBox()
         {
+            _waitForReadData = new AutoResetEvent(false);
             _LCTService.ReadCOMHWBaseInfoAsync((info, o) =>
                 {
                     if (info == null || info.AllInfo == null || info.AllInfo.AllInfoDict == null)
@@ -36,6 +45,7 @@ namespace Nova.LED.Modules.Box.Services
                         return;
                     }
 
+                    _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent() { Message = "Get LED Boxes Data" });
                     var currentCOMAndHWBaseInfo = info.AllInfo.AllInfoDict.ElementAt(0);
                     var currentHWBaseInfo = currentCOMAndHWBaseInfo.Value;
                     foreach (var item in currentHWBaseInfo.LEDDisplayInfoList)
@@ -64,7 +74,10 @@ namespace Nova.LED.Modules.Box.Services
                                                  Boxes = y.ToList()
                                              });
                     _groups = new List<LEDBoxGroup>(boxGroupList);
+                    _waitForReadData.Set();
                 });
+
+            _waitForReadData.WaitOne(3000);
         }
 
         private string GetIndexLocation(string p1, byte p2, byte p3, ushort p4)

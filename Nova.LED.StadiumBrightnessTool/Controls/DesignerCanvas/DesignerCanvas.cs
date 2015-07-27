@@ -75,35 +75,33 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
         {
             base.OnDrop(e);
             DragObject dragObject = e.Data.GetData(typeof(DragObject)) as DragObject;
-            if (dragObject != null && !String.IsNullOrEmpty(dragObject.Xaml))
+            if (dragObject != null)
             {
                 DesignerItem newItem = null;
-                Object content = XamlReader.Load(XmlReader.Create(new StringReader(dragObject.Xaml)));
-
-                if (content != null)
+                if (dragObject.BusinessObject != null)
                 {
                     newItem = new DesignerItem();
-                    newItem.Content = content;
+                    newItem.DataContext = dragObject.BusinessObject;
 
                     Point position = e.GetPosition(this);
 
-                    if (dragObject.DesiredSize.HasValue)
-                    {
-                        Size desiredSize = dragObject.DesiredSize.Value;
-                        newItem.Width = desiredSize.Width;
-                        newItem.Height = desiredSize.Height;
+                    //if (dragObject.DesiredSize.HasValue)
+                    //{
+                    //    Size desiredSize = dragObject.DesiredSize.Value;
+                    //    newItem.Width = desiredSize.Width;
+                    //    newItem.Height = desiredSize.Height;
 
-                        Canvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2));
-                        Canvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2));
-                    }
-                    else
-                    {
-                        Canvas.SetLeft(newItem, Math.Max(0, position.X));
-                        Canvas.SetTop(newItem, Math.Max(0, position.Y));
-                    }
+                    //    Canvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2));
+                    //    Canvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2));
+                    //}
+                    //else
+                    //{
+                    Canvas.SetLeft(newItem, Math.Max(0, position.X));
+                    Canvas.SetTop(newItem, Math.Max(0, position.Y));
+                    //}
 
                     Canvas.SetZIndex(newItem, this.Children.Count);
-                    this.Children.Add(newItem);                    
+                    this.Children.Add(newItem);
                     //SetConnectorDecoratorTemplate(newItem);
 
                     //update selection
@@ -154,5 +152,5 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
         //}
     }
 
-    
+
 }

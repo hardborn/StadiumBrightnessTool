@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Nova.LED.Modules.Splash.View
 {
@@ -29,7 +30,11 @@ namespace Nova.LED.Modules.Splash.View
         {
             InitializeComponent();
             this.DataContext = viewModel;
+            this.UIDispatcher = Dispatcher.CurrentDispatcher;
         }
+
+        [Export]
+        public Dispatcher UIDispatcher { get; private set; }
      
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.ServiceLocation;
 using Nova.LED.Infrastructure.Events;
+using Nova.LED.Infrastructure.Interfaces;
 using Nova.LED.Modules.Box.Services;
 using System;
 using System.Collections.Generic;
@@ -16,18 +17,23 @@ namespace Nova.LED.Modules.Box
     [Export]
     public class BoxModule:IModule
     {
+        private M3LCTServiceProxy _M3Service;
+
         private IEventAggregator _eventAggregator;
-        public BoxModule()
+        private ILEDBoxService _LEDBoxService;
+
+        [ImportingConstructor]
+        public BoxModule(M3LCTServiceProxy serviceProxy,ILEDBoxService boxService, IEventAggregator eventAggregator)
         {
-            _eventAggregator = ServiceLocator.Current.GetInstance<IEventAggregator>();
+            _LEDBoxService = boxService;
+            _eventAggregator = eventAggregator;
+            _M3Service = serviceProxy;
         }
 
-        [Import]
-        private M3LCTServiceProxy _M3Service;
         public void Initialize()
         {
-            _M3Service.InitalizeServerProxy();
-            Thread.Sleep(5000);
+            //_M3Service.InitalizeServerProxy();
+            //_M3Service.RegisterToServer();
         }
     }
 }

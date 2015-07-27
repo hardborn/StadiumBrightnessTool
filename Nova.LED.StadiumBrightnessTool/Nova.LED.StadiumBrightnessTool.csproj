@@ -15,7 +15,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -33,12 +33,35 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hardborn.UI.MetroUI">
       <HintPath>..\Lib\Hardborn.UI.MetroUI.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.Composition">
       <HintPath>..\Lib\Prism\Microsoft.Practices.Prism.Composition.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism.Interactivity">
+      <HintPath>..\Lib\Prism\Microsoft.Practices.Prism.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.MefExtensions">
       <HintPath>..\Lib\Prism\Microsoft.Practices.Prism.MefExtensions.dll</HintPath>
@@ -49,12 +72,54 @@
     <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
       <HintPath>..\Lib\Prism\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.Prism.SharedInterfaces">
+      <HintPath>..\Lib\Prism\Microsoft.Practices.Prism.SharedInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\Lib\Prism\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Nova.Equipment.Protocol.TGProtocol, Version=1.0.1507.1401, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Nova\Nova.Equipment.Protocol.TGProtocol.dll</HintPath>
+    </Reference>
+    <Reference Include="Nova.IO.Port.ICommProcessorBase, Version=2.0.1311.2101, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Nova\Nova.IO.Port.ICommProcessorBase.dll</HintPath>
+    </Reference>
+    <Reference Include="Nova.LCT.GigabitSystem.CommonInfoAccessor, Version=1.0.1507.801, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Nova\Nova.LCT.GigabitSystem.CommonInfoAccessor.dll</HintPath>
+    </Reference>
+    <Reference Include="Nova.LCT.GigabitSystem.DataClass">
+      <HintPath>..\Lib\Nova\Nova.LCT.GigabitSystem.DataClass.dll</HintPath>
+    </Reference>
+    <Reference Include="Nova.LCT.GigabitSystem.ProtocolEnum, Version=1.0.1507.701, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Nova\Nova.LCT.GigabitSystem.ProtocolEnum.dll</HintPath>
+    </Reference>
+    <Reference Include="Nova.LCT.LCTServerBaseProxy, Version=1.0.1110.2801, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Nova\Nova.LCT.LCTServerBaseProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Nova.LCT.LCTServerMessageProxy, Version=2.0.1504.2001, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Nova\Nova.LCT.LCTServerMessageProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Nova.Message.Common, Version=2.0.1404.2801, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Nova\Nova.Message.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Nova.Runtime.APIFunction">
+      <HintPath>..\Lib\Nova\Nova.Runtime.APIFunction.dll</HintPath>
+    </Reference>
+    <Reference Include="Nova.Xml.Serialization.XmlSerializableObject, Version=1.3.1404.1001, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Nova\Nova.Xml.Serialization.XmlSerializableObject.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -124,6 +189,7 @@
     <Compile Include="DragObject.cs" />
     <Compile Include="StadiumBrightnessBootstrapper.cs" />
     <Compile Include="ViewModel\BoxGroupViewModel.cs" />
+    <Compile Include="ViewModel\LEDBoxViewModel.cs" />
     <Compile Include="ViewModel\LocationProfileViewModel.cs" />
     <Compile Include="View\BoxGroupSummaryView.xaml.cs">
       <DependentUpon>BoxGroupSummaryView.xaml</DependentUpon>

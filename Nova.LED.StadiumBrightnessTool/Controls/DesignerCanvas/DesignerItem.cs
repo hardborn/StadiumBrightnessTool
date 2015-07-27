@@ -158,26 +158,26 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
 
         void DesignerItem_Loaded(object sender, RoutedEventArgs e)
         {
-            if (base.Template != null)
-            {
-                ContentPresenter contentPresenter =
-                    this.Template.FindName("PART_ContentPresenter", this) as ContentPresenter;
-                if (contentPresenter != null)
-                {
-                    UIElement contentVisual = VisualTreeHelper.GetChild(contentPresenter, 0) as UIElement;
-                    if (contentVisual != null)
-                    {
-                        DragThumb thumb = this.Template.FindName("PART_DragThumb", this) as DragThumb;
-                        if (thumb != null)
-                        {
-                            ControlTemplate template =
-                                DesignerItem.GetDragThumbTemplate(contentVisual) as ControlTemplate;
-                            if (template != null)
-                                thumb.Template = template;
-                        }
-                    }
-                }
-            }
+            //if (base.Template != null)
+            //{
+            //    ContentPresenter contentPresenter =
+            //        this.Template.FindName("PART_ContentPresenter", this) as ContentPresenter;
+            //    if (contentPresenter != null)
+            //    {
+            //        UIElement contentVisual = VisualTreeHelper.GetChild(contentPresenter, 0) as UIElement;
+            //        if (contentVisual != null)
+            //        {
+            //            DragThumb thumb = this.Template.FindName("PART_DragThumb", this) as DragThumb;
+            //            if (thumb != null)
+            //            {
+            //                ControlTemplate template =
+            //                    DesignerItem.GetDragThumbTemplate(contentVisual) as ControlTemplate;
+            //                if (template != null)
+            //                    thumb.Template = template;
+            //            }
+            //        }
+            //    }
+            //}
         }
     }
 }

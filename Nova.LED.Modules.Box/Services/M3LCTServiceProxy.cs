@@ -22,13 +22,22 @@ namespace Nova.LED.Modules.Box.Services
         private readonly string SERVER_NAME = "MarsServerProvider";
         private readonly string SERVER_FORM_NAME = "A7F89E4D-04F4-46a6-9754-A334B3E8FEE5";
         private readonly string SERVER_PATH = AppDomain.CurrentDomain.BaseDirectory + "..\\MarsServerProvider\\MarsServerProvider.exe";
+        private AllCOMHWBaseInfoAccessor _accessor;
+        private Dispatcher _uiDispatcher;
+
+        [ImportingConstructor]
+        public M3LCTServiceProxy(Dispatcher uiDispatcher)
+        {
+            _uiDispatcher = uiDispatcher;
+            InitalizeServerProxy();
+        }
 
         public void InitalizeServerProxy()
         {
 
             StartServer();
 
-            Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
+            _uiDispatcher.Invoke(new Action(() =>
             {
                 try
                 {
@@ -42,7 +51,7 @@ namespace Nova.LED.Modules.Box.Services
                     _serverProxy.Initalize();
                     //_fLogService.Info("Mars Initalize Server finish!");
                     _serverProxy.HandshakeServerProviderInterval = 10000;
-                    //_serverProxy.NotifyRegisterErrEvent += OnNotifyRegisterErrEvent;
+                    _serverProxy.NotifyRegisterErrEvent += OnNotifyRegisterErrEvent;
                     //_serverProxy.CompleteConnectAllController += OnCompleteConnectAllController;
                     _serverProxy.EquipmentChangeEvent += OnEquipmentChangeEvent;
 
@@ -124,7 +133,7 @@ namespace Nova.LED.Modules.Box.Services
         }
 
 
-        private bool RegisterToServer()
+        public bool RegisterToServer()
         {
             string serverVer = string.Empty;
             bool res = false;
@@ -154,10 +163,14 @@ namespace Nova.LED.Modules.Box.Services
         }
 
 
-        private HWSoftwareSpaceRes LoadAllComBaseInfoFromHW()
+        public HWSoftwareSpaceRes LoadAllComBaseInfoFromHW()
         {
             AllCOMHWBaseInfoAccessor accessor = new AllCOMHWBaseInfoAccessor(_serverProxy); ;
             HWSoftwareSpaceRes res = accessor.ReadAllComHWBaseInfo(ReadAllComBaseInfoCompleted, null);
+            if (res == HWSoftwareSpaceRes.OK)
+            {
+
+            }
             return res;
         }
 
@@ -177,9 +190,12 @@ namespace Nova.LED.Modules.Box.Services
 
         public void ReadCOMHWBaseInfoAsync(Action<CompleteReadAllComHWBaseInfoParams, object> callbackAction)
         {
-            AllCOMHWBaseInfoAccessor accessor = new AllCOMHWBaseInfoAccessor(_serverProxy);
+            if (_accessor == null)
+            {
+                _accessor = new AllCOMHWBaseInfoAccessor(_serverProxy);
+            }            
 
-            HWSoftwareSpaceRes res = accessor.ReadAllComHWBaseInfo((c, o) => { callbackAction(c, o); }, null);
+            HWSoftwareSpaceRes res = _accessor.ReadAllComHWBaseInfo((c, o) => { callbackAction(c, o); }, null);
         }
 
         public void SendRequestReadData(PackageRequestReadData requestData)

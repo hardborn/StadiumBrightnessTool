@@ -116,7 +116,7 @@ namespace Nova.LED.Infrastructure.Models
         public string COMIndex
         {
             get { return _COMIndex; }
-            set { COMIndex = value; }
+            set { _COMIndex = value; }
         }
     }
 }

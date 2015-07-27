@@ -26,7 +26,7 @@ namespace Nova.LED.Modules.Splash.ViewModel
             get { return _status; }
             set
             {
-                _status = value;
+                //_status = value;
                 SetProperty(ref _status, value);
             }
         }
