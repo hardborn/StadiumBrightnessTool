@@ -189,7 +189,9 @@
     <Compile Include="DragObject.cs" />
     <Compile Include="StadiumBrightnessBootstrapper.cs" />
     <Compile Include="ViewModel\BoxGroupViewModel.cs" />
-    <Compile Include="ViewModel\LEDBoxViewModel.cs" />
+    <Compile Include="ViewModel\LEDBoxViewModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ViewModel\LocationProfileViewModel.cs" />
     <Compile Include="View\BoxGroupSummaryView.xaml.cs">
       <DependentUpon>BoxGroupSummaryView.xaml</DependentUpon>
