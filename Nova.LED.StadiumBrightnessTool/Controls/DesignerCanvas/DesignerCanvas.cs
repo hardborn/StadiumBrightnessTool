@@ -81,6 +81,7 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
                 if (dragObject.BusinessObject != null)
                 {
                     newItem = new DesignerItem();
+                    //newItem.Content = Application.Current.Resources["DesignItemControl"]//FindResource("DesignItemControl");
                     newItem.DataContext = dragObject.BusinessObject;
 
                     Point position = e.GetPosition(this);

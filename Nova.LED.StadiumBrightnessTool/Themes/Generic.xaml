@@ -15,7 +15,8 @@
                             BorderThickness="1"
                             Padding="{TemplateBinding Control.Padding}"
                             SnapsToDevicePixels="True">
-                        <Rectangle Width="32"
+                        <Rectangle Name="boxRectangle"
+                                   Width="32"
                                    Height="32"
                                    Fill="Orange"
                                    IsHitTestVisible="True"
@@ -29,6 +30,24 @@
                             </i:Interaction.Triggers>
                         </Rectangle>
                     </Border>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsSelected}">
+                            <DataTrigger.Value>
+                                <sys:Boolean>true</sys:Boolean>
+                            </DataTrigger.Value>
+                            <DataTrigger.Setters>
+                                <Setter Property="Fill" Value="#FC0FCB2F" TargetName="boxRectangle" />
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=IsSelected}">
+                            <DataTrigger.Value>
+                                <sys:Boolean>false</sys:Boolean>
+                            </DataTrigger.Value>
+                            <DataTrigger.Setters>
+                                <Setter Property="Fill" Value="Orange" TargetName="boxRectangle" />
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
@@ -41,6 +60,8 @@
         </Setter>
     </Style>
 
+
+
     <Style TargetType="{x:Type local:DragThumb}">
         <Setter Property="Template">
             <Setter.Value>
@@ -51,8 +72,16 @@
         </Setter>
     </Style>
 
+    <!--<Style TargetType="{x:Type local:LEDBoxGroupToolItem}">
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    </Style>-->
+
     <Style TargetType="{x:Type local:LEDBoxGroupToolItem}">
-        <Setter Property="Template">
+        <!--<Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:LEDBoxGroupToolItem}">
                     <Grid>
@@ -63,48 +92,96 @@
                                    StrokeThickness="1" />
                         <ContentPresenter Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
 
-                        <!--  Content="{TemplateBinding ContentControl.Content}"  -->
+                        -->
+        <!--  Content="{TemplateBinding ContentControl.Content}"  -->
+        <!--
 
 
 
-                    </Grid>
-                    <!--<Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image Grid.Column="0"
-                               Width="30"
-                               Height="32"
-                               HorizontalAlignment="Stretch"
-                               VerticalAlignment="Stretch"
-                               Source="/Resources/Image/cabinet-32.png" />
-                        <Grid Grid.Column="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0"
-                                       Margin="10,0,0,0"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center"
-                                       Text="{Binding IndexLocation}" />
-                            <TextBlock Grid.Row="1"
-                                       Margin="10,0,0,0"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center"
-                                       Text="{Binding BoxCount}" />
+                    </Grid>                   
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>-->
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:LEDBoxGroupToolItem}">
+                    <Grid>
+                        <Border Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                       Width="30"
+                                       Height="32"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Source="/Resources/Image/cabinet-32.png" />
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0"
+                                               Margin="10,0,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Text="{Binding IndexLocation}" />
+                                <TextBlock Grid.Row="1"
+                                               Margin="10,0,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Text="{Binding BoxCount}" />
+                            </Grid>
+
                         </Grid>
+                    </Grid>
 
-                    </Grid>-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundSelected}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}"/>
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
     <Style TargetType="{x:Type local:LEDBoxGroupTool}">
-        <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="Focusable" Value="False" />
+        <!--<Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Focusable" Value="False" />-->
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+        <!--<Setter Property="ItemContainerStyle" Value="{StaticResource FlatItemsControlItem}" />-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:LEDBoxGroupTool}">
@@ -158,10 +235,13 @@
                         <!--<Control x:Name="PART_ConnectorDecorator"
                                  Template="{StaticResource ConnectorDecoratorTemplate}"
                                  Visibility="Hidden" />-->
+                        <local:DragThumb x:Name="PART_DragThumb" Cursor="SizeAll" />
+
                         <ContentPresenter x:Name="PART_ContentPresenter"
                                           Margin="{TemplateBinding ContentControl.Padding}"
                                           HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch">
+                                          VerticalAlignment="Stretch"
+                                          Content="{TemplateBinding ContentControl.Content}">
                             <ContentPresenter.Content>
                                 <ItemsControl ItemsSource="{Binding DataContext.LEDBoxes,
                                                                     RelativeSource={RelativeSource TemplatedParent}}"
@@ -169,8 +249,6 @@
                                               Style="{StaticResource BoxGroupDesignItemStyle}" />
                             </ContentPresenter.Content>
                         </ContentPresenter>
-
-                        <local:DragThumb x:Name="PART_DragThumb" Cursor="SizeAll" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsGroup}" Value="True">

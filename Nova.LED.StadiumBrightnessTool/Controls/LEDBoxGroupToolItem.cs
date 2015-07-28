@@ -45,7 +45,7 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
     ///     <MyNamespace:LEDBoxToolItem/>
     ///
     /// </summary>
-    public class LEDBoxGroupToolItem : ContentControl
+    public class LEDBoxGroupToolItem : ListBoxItem
     {
         private Point? dragStartPoint = null;
 
@@ -72,7 +72,7 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
                 // see SDK documentation; short term solution only;
                 //string xamlString = XamlWriter.Save(this.Content);
                 DragObject dataObject = new DragObject();
-                dataObject.BusinessObject = this.Content;
+                dataObject.BusinessObject = this.DataContext;
 
                 //StackPanel panel = VisualTreeHelper.GetParent(this) as StackPanel;
                 //if (panel != null)

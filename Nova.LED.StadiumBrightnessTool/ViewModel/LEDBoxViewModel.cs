@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Nova.LED.StadiumBrightnessTool.ViewModel
 {
-    public class LEDBoxViewModel:BindableBase
+    public class LEDBoxViewModel : BindableBase
     {
 
         private LEDBox _LEDBox;
@@ -23,7 +23,7 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
 
         public const string IndexLocationPropertyName = "IndexLocation";
 
-        private string _indexLocation =string.Empty;
+        private string _indexLocation = string.Empty;
 
         /// <summary>
         /// Sets and gets the IndexLocation property.
@@ -44,11 +44,21 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
 
         public DelegateCommand<object> SelectBoxCommand { get; set; }
 
-        private void SelectBox(object obj)
+        private bool _isSelected = false;
+        public bool IsSelected
         {
-
+            get { return _isSelected; }
+            set
+            {
+                SetProperty(ref _isSelected, value);
+            }
         }
 
-         
+        private void SelectBox(object obj)
+        {
+            IsSelected = !IsSelected;
+        }
+
+
     }
 }

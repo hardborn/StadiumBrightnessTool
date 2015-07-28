@@ -4,6 +4,7 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using Nova.LED.Infrastructure.Events;
 using Nova.LED.Infrastructure.Interfaces;
 using Nova.LED.Modules.Box;
+using Nova.LED.Modules.MockService;
 using Nova.LED.Modules.Splash;
 using Nova.LED.Modules.Splash.Events;
 using System;
@@ -34,7 +35,8 @@ namespace Nova.LED.StadiumBrightnessTool
         {
             this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(StadiumBrightnessBootstrapper).Assembly));
             this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(SplashModule).Assembly));
-            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(BoxModule).Assembly));
+           // this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(BoxModule).Assembly));
+            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(MockModule).Assembly));
         }
 
         protected override void ConfigureContainer()
@@ -50,9 +52,9 @@ namespace Nova.LED.StadiumBrightnessTool
             IModule splashModule = this.Container.GetExportedValue<SplashModule>();
             splashModule.Initialize();
 
-            EventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = "Connecting M3 Service..." });
-            IModule boxModule = this.Container.GetExportedValue<BoxModule>();
-            boxModule.Initialize();
+            //EventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = "Connecting M3 Service..." });
+            //IModule boxModule = this.Container.GetExportedValue<BoxModule>();
+            //boxModule.Initialize();
         }
     }
 }
