@@ -255,10 +255,6 @@
       <Project>{aa1fed37-b6e5-4816-bf9a-2eaf17d1c6d8}</Project>
       <Name>Nova.LED.Modules.Box</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Nova.LED.Modules.MockService\Nova.LED.Modules.MockService.csproj">
-      <Project>{506faf91-0d2a-4c84-8005-5050397026cf}</Project>
-      <Name>Nova.LED.Modules.MockService</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Nova.LED.Modules.Splash\Nova.LED.Modules.Splash.csproj">
       <Project>{ed29eed6-a7f0-4553-9d4a-61f420676bce}</Project>
       <Name>Nova.LED.Modules.Splash</Name>
