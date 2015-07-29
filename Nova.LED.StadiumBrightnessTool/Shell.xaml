@@ -1,36 +1,38 @@
-﻿<mui:ModernWindow x:Class="Nova.LED.StadiumBrightnessTool.Shell"
-                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:mui="http://hardborn.com/UI/MetroUI"
-                  Title="Stadium Brightness Tool"
-                  Width="525"
-                  Height="350"
-                  ContentSource="/LayoutTab.xaml"
-                  WindowStartupLocation="CenterScreen"
-                  IsTitleVisible="True">
-    <!--<mui:ModernWindow.TitleLinks>
-    -->
-    <!--<mui:Link DisplayName="打开" Source="" />-->
-    <!--
-        <mui:LinkCollection>
-            <mui:Link DisplayName="设置" Source="" />
-            <mui:Link DisplayName="帮助" Source="" />
-            <mui:Link DisplayName="打开" Source=""/>
-        </mui:LinkCollection>
+﻿<Controls:MetroWindow x:Class="Nova.LED.StadiumBrightnessTool.Shell"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:Controls="http://hardborn.com/UI/MetroUI/Controls"
+                      xmlns:local="clr-namespace:Nova.LED.StadiumBrightnessTool"
+                      Title="Stadium Brightness Tool"
+                      MinWidth="1000"
+                      MinHeight="600"
+                      WindowStartupLocation="CenterScreen">
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Content="Setting..." />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
 
-    </mui:ModernWindow.TitleLinks>-->
-    <mui:ModernWindow.TitleLinks>
-        <mui:Link DisplayName="打开" Source="" />
-        <mui:Link DisplayName="设置" Source="/View/Settings.xaml" />
-        <mui:Link DisplayName="帮助" Source="" />
-    </mui:ModernWindow.TitleLinks>
-    <!--<mui:ModernWindow.Content>
-        <mui:ModernTab Layout="Tab" SelectedSource="/LocationProfileView.xaml">
-            <mui:ModernTab.Links>
-                <mui:Link DisplayName="配置模式" Source="/LocationProfileView.xaml" />
-                <mui:Link DisplayName="调节模式" Source="" />
-            </mui:ModernTab.Links>
-        </mui:ModernTab>
-    </mui:ModernWindow.Content>-->  
+    <Controls:MetroContentControl>
+        <Grid Margin="20,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Menu Grid.Row="0"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Stretch">
+                <MenuItem Header="File">
+                    <MenuItem Header="Open" />
+                    <MenuItem Header="Save" />
+                </MenuItem>
+            </Menu>
+            <local:LayoutTab Grid.Row="1" />
+            <StatusBar Grid.Row="2"
+                       Height="24"
+                       HorizontalAlignment="Stretch" />
+        </Grid>
 
-</mui:ModernWindow>
+    </Controls:MetroContentControl>
+</Controls:MetroWindow>

@@ -3,6 +3,7 @@ using Microsoft.Practices.Prism.Mvvm;
 using Nova.LED.Infrastructure.Interfaces;
 using Nova.LED.Infrastructure.Models;
 using Nova.LED.Modules.Box;
+using Nova.LED.StadiumBrightnessTool.Behaviors;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 namespace Nova.LED.StadiumBrightnessTool.ViewModel
 {
     [Export]
-    public class BoxGroupViewModel : BindableBase
+    public class BoxGroupViewModel : BindableBase,IDragable
     {
         private LEDBoxGroup _boxGroup;
 
@@ -28,10 +29,10 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
                 LEDBoxes.Add(new LEDBoxViewModel(item));
             }
 
-           
+
         }
 
-       
+
 
         private ObservableCollection<LEDBoxViewModel> _boxes;
         public ObservableCollection<LEDBoxViewModel> LEDBoxes
@@ -91,7 +92,29 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
         }
 
 
-      
+        private double _elementPxPointX;
+        public double ElementPxPointX
+        {
+            get { return _elementPxPointX; }
+            set { SetProperty(ref _elementPxPointX, value); }
+        }
 
+        private double _elementPxPointY;
+        public double ElementPxPointY
+        {
+            get { return _elementPxPointY; }
+            set { SetProperty(ref _elementPxPointY, value); }
+        }
+
+
+        public Type DataType
+        {
+            get { return typeof(BoxGroupViewModel); }
+        }
+
+        public void Copy(object data)
+        {
+            //throw new NotImplementedException();
+        }
     }
 }

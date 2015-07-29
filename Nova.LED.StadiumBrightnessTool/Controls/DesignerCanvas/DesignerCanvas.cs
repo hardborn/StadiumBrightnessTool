@@ -151,6 +151,12 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
         //            decorator.Template = template;
         //    }
         //}
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            var x = Math.Pow(2, e.Delta / 3.0 / Mouse.MouseWheelDeltaForOneLine);
+            this.Scale *= x;
+        }
     }
 
 

@@ -1,17 +1,19 @@
 ﻿<Application x:Class="Nova.LED.StadiumBrightnessTool.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:prism="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity">
+             xmlns:prism="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="pack://application:,,,/Hardborn.UI.MetroUI;component/Assets/ModernUI.xaml" />-->
-                <ResourceDictionary Source="/Hardborn.UI.MetroUI;component/Assets/ModernUI.xaml" />
-                <ResourceDictionary Source="/Hardborn.UI.MetroUI;component/Assets/ModernUI.Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Hardborn.UI.MetroUI;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Hardborn.UI.MetroUI;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Hardborn.UI.MetroUI;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Hardborn.UI.MetroUI;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Hardborn.UI.MetroUI;component/Styles/Accents/BaseLight.xaml" />
             </ResourceDictionary.MergedDictionaries>
-         
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

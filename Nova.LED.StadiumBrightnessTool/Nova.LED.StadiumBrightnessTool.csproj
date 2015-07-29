@@ -57,6 +57,9 @@
     <Reference Include="Hardborn.UI.MetroUI">
       <HintPath>..\Lib\Hardborn.UI.MetroUI.dll</HintPath>
     </Reference>
+    <Reference Include="Hardborn.UI.MetroUI.Resources">
+      <HintPath>..\Lib\Hardborn.UI.MetroUI.Resources.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.Prism.Composition">
       <HintPath>..\Lib\Prism\Microsoft.Practices.Prism.Composition.dll</HintPath>
     </Reference>
@@ -137,6 +140,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\FrameworkElementAdorner.cs" />
+    <Compile Include="Behaviors\FrameworkElementDragBehavior.cs" />
+    <Compile Include="Behaviors\FramworkElementDropBehavior.cs" />
+    <Compile Include="Behaviors\IDragable.cs" />
+    <Compile Include="Behaviors\IDropable.cs" />
     <Compile Include="Controls\DesignerCanvas\DesignerCanvas.Commands.cs" />
     <Compile Include="View\Settings.xaml.cs" />
     <Compile Include="View\SettingsAppearance.xaml.cs" />
@@ -254,6 +262,10 @@
     <ProjectReference Include="..\Nova.LED.Modules.Box\Nova.LED.Modules.Box.csproj">
       <Project>{aa1fed37-b6e5-4816-bf9a-2eaf17d1c6d8}</Project>
       <Name>Nova.LED.Modules.Box</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nova.LED.Modules.MockService\Nova.LED.Modules.MockService.csproj">
+      <Project>{506faf91-0d2a-4c84-8005-5050397026cf}</Project>
+      <Name>Nova.LED.Modules.MockService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nova.LED.Modules.Splash\Nova.LED.Modules.Splash.csproj">
       <Project>{ed29eed6-a7f0-4553-9d4a-61f420676bce}</Project>

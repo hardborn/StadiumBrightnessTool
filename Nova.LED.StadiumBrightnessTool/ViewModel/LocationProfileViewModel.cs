@@ -27,6 +27,15 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
         }
 
 
+        private BoxGroupViewModel _currentBoxGroup;
+        public BoxGroupViewModel CurrentBoxGroup { 
+            get { return _currentBoxGroup; }
+            set
+            {
+                SetProperty(ref _currentBoxGroup, value);
+            }
+        }
+
         public LocationProfileViewModel()
         {
             _LEDBoxService = ServiceLocator.Current.GetInstance<ILEDBoxService>();
