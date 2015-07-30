@@ -1,6 +1,8 @@
-﻿using Nova.LED.StadiumBrightnessTool.ViewModel;
+﻿using Microsoft.Practices.ServiceLocation;
+using Nova.LED.StadiumBrightnessTool.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,10 +23,20 @@ namespace Nova.LED.StadiumBrightnessTool
     /// </summary>
     public partial class LayoutTab : UserControl
     {
+         
         public LayoutTab()
         {
             InitializeComponent();
-            this.DataContext = new LocationProfileViewModel();
+            //var viewModel = ServiceLocator.Current.GetInstance<LocationProfileViewModel>();
+            this.Loaded += LayoutTab_Loaded;
+           //this.DataContext = viewModel;
         }
+
+         void LayoutTab_Loaded(object sender, RoutedEventArgs e)
+         {
+             var viewModel = ServiceLocator.Current.GetInstance<LocationProfileViewModel>();
+             //this.Loaded += LayoutTab_Loaded;
+             this.DataContext = viewModel;
+         }
     }
 }

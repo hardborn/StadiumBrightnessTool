@@ -18,7 +18,6 @@ namespace Nova.LED.Modules.Box
     public class BoxModule:IModule
     {
         private M3LCTServiceProxy _M3Service;
-
         private IEventAggregator _eventAggregator;
         private ILEDBoxService _LEDBoxService;
 

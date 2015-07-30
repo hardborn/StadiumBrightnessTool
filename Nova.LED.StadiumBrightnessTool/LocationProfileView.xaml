@@ -5,54 +5,66 @@
              xmlns:canvas="clr-namespace:System.Windows.Controls"
              xmlns:content="http://hardborn.com/UI/MetroUI"
              xmlns:control="clr-namespace:Nova.LED.StadiumBrightnessTool.Controls"
+             xmlns:converters="clr-namespace:Nova.LED.StadiumBrightnessTool.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:local="clr-namespace:Nova.LED.StadiumBrightnessTool.Controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:view="clr-namespace:Nova.LED.StadiumBrightnessTool.View"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:prism="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity"
-             xmlns:local="clr-namespace:Nova.LED.StadiumBrightnessTool.Controls" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:view="clr-namespace:Nova.LED.StadiumBrightnessTool.View"
              d:DesignHeight="300"
              d:DesignWidth="300"
              mc:Ignorable="d">
     <UserControl.Resources>
+
+        <converters:OpacityConverter x:Key="OpacityConverter" />
+
         <Style x:Key="BoxGroupDesignItemStyle" TargetType="{x:Type ItemsControl}">
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <Border Background="{TemplateBinding Panel.Background}"
-                            BorderBrush="{TemplateBinding Border.BorderBrush}"
-                            BorderThickness="1"
-                            Padding="{TemplateBinding Control.Padding}"
-                            SnapsToDevicePixels="True">
-                            <Rectangle Name="boxRectangle"
-                                   Width="32"
-                                   Height="32"
-                                   Fill="Orange"
-                                   IsHitTestVisible="True"
-                                   SnapsToDevicePixels="true"
-                                   StrokeDashArray="2"
-                                   StrokeThickness="1">
-                            </Rectangle>
+
+                        <Border Name="selectedBorder"
+                                Background="{TemplateBinding Panel.Background}"
+                                BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                BorderThickness="1"
+                                Padding="{TemplateBinding Control.Padding}"
+                                SnapsToDevicePixels="True">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="2*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Rectangle Name="boxRectangle"
+                                           Grid.RowSpan="2"
+                                           Grid.ColumnSpan="2"
+                                           Width="32"
+                                           Height="32"
+                                           Fill="#FF1BA1E2"
+                                           IsHitTestVisible="True"
+                                           Opacity="{Binding CurrentBrightness,
+                                                             Converter={StaticResource OpacityConverter}}"
+                                           SnapsToDevicePixels="true"
+                                           StrokeDashArray="2"
+                                           StrokeThickness="1" />
+                                <TextBlock Grid.RowSpan="2"
+                                           Grid.ColumnSpan="2"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Text="{Binding CurrentBrightness}" />
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="1"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Bottom"
+                                           FontSize="7"
+                                           Text="{Binding ConnectIndex}" />
+                            </Grid>
                         </Border>
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsSelected}">
-                                <DataTrigger.Value>
-                                    <sys:Boolean>true</sys:Boolean>
-                                </DataTrigger.Value>
-                                <DataTrigger.Setters>
-                                    <Setter TargetName="boxRectangle" Property="Fill" Value="#FC0FCB2F" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=IsSelected}">
-                                <DataTrigger.Value>
-                                    <sys:Boolean>false</sys:Boolean>
-                                </DataTrigger.Value>
-                                <DataTrigger.Setters>
-                                    <Setter TargetName="boxRectangle" Property="Fill" Value="Orange" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -68,10 +80,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ItemsControl">
-                        <Border Background="White"
-                            Width="{TemplateBinding Width}"
-                            Height="{TemplateBinding Height}"
-                            ClipToBounds="True">
+                        <Border Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                Background="White"
+                                ClipToBounds="True">
                             <ItemsPresenter />
                         </Border>
                     </ControlTemplate>
@@ -80,22 +92,25 @@
             <Setter Property="ItemsPanel">
                 <Setter.Value>
                     <ItemsPanelTemplate>
-                        <canvas:ZoomableCanvas  x:Name="ZoomCanvas" 
-                                                   ApplyTransform="True"
-                                                   RealizationLimit="1000"
-                                                   RealizationPriority="Background"
-                                                   RealizationRate="10"/>
+                        <canvas:ZoomableCanvas x:Name="ZoomCanvas"
+                                               ApplyTransform="True"
+                                               RealizationLimit="1000"
+                                               RealizationPriority="Background"
+                                               RealizationRate="10" />
                     </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <local:DesignerItem >
-                            <ItemsControl ItemsSource="{Binding DataContext.LEDBoxes,
-                                                                RelativeSource={RelativeSource TemplatedParent}}"
-                                          SnapsToDevicePixels="True"
-                                          Style="{StaticResource BoxGroupDesignItemStyle}" />
+                        <local:DesignerItem>
+                            <StackPanel Grid.Row="1" Orientation="Vertical">
+                                <ItemsControl ItemsSource="{Binding DataContext.LEDBoxes,
+                                                                    RelativeSource={RelativeSource TemplatedParent}}"
+                                              SnapsToDevicePixels="True"
+                                              Style="{StaticResource BoxGroupDesignItemStyle}" />
+                                <TextBlock HorizontalAlignment="Center" Text="{Binding IndexLocation}" />
+                            </StackPanel>
                         </local:DesignerItem>
 
                     </DataTemplate>
@@ -104,8 +119,8 @@
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
                     <Style>
-                        <Setter Property="Canvas.Left" Value="{Binding ElementPxPointX}"/>
-                        <Setter Property="Canvas.Top" Value="{Binding ElementPxPointY}"/>
+                        <Setter Property="Canvas.Left" Value="{Binding ElementPxPointX}" />
+                        <Setter Property="Canvas.Top" Value="{Binding ElementPxPointY}" />
                     </Style>
                 </Setter.Value>
             </Setter>
@@ -113,52 +128,70 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="60" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="4" />
             <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
 
         <ScrollViewer>
-            <StackPanel HorizontalAlignment="Left">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch">
                 <TextBlock Margin="0,0,0,8"
                            HorizontalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="Bold"
                            Text="LEDBox Group" />
                 <!--  Style="{StaticResource Heading2}"  -->
-                <ListBox ItemsSource="{Binding BoxGroupsToolItem}"
+                <ListBox Background="WhiteSmoke"
+                         ItemsSource="{Binding BoxGroupsToolItem}"
                          SelectedItem="{Binding CurrentBoxGroupToolItem}"
                          SnapsToDevicePixels="True">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
+                            <Grid Margin="0,10,0,10">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <i:Interaction.Behaviors>
                                     <behaviors:FrameworkElementDragBehavior />
                                 </i:Interaction.Behaviors>
-                                <Image Grid.Column="0"
-                                       Width="30"
-                                       Height="32"
-                                       HorizontalAlignment="Stretch"
-                                       VerticalAlignment="Stretch"
-                                       Source="/Resources/Image/cabinet-32.png" />
-                                <Grid Grid.Column="1">
+                                <Grid Grid.Column="0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
+                                        <RowDefinition Height="20" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0"
-                                               Margin="10,0,0,0"
-                                               HorizontalAlignment="Left"
-                                               VerticalAlignment="Center"
-                                               Text="{Binding IndexLocation}" />
-                                    <TextBlock Grid.Row="1"
-                                               Margin="10,0,0,0"
-                                               HorizontalAlignment="Left"
-                                               VerticalAlignment="Center"
-                                               Text="{Binding BoxCount}" />
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                        <TextBlock Margin="10,0,0,0"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="Bold"
+                                                   Text="{Binding IndexLocation}" />
+                                        <TextBlock Margin="10,0,0,0"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding BoxCount}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                        <TextBlock Margin="10,0,0,0"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding IndexLocation}" />
+                                        <Image Width="16"
+                                               Height="16"
+                                               Margin="5,0,0,0"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"
+                                               Source="/Resources/Image/edit_write-16.png" />
+                                    </StackPanel>
                                 </Grid>
+                                <Image Grid.Column="2"
+                                       Width="32"
+                                       Height="32"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Source="/Resources/Image/location-32.png" />
+
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -177,9 +210,9 @@
                 <ItemsControl HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
                               AllowDrop="True"
-                              Style="{StaticResource ConfigurationItemsControlStyle}"
                               Background="WhiteSmoke"
-                              ItemsSource="{Binding BoxGroups}">
+                              ItemsSource="{Binding BoxGroups}"
+                              Style="{StaticResource ConfigurationItemsControlStyle}">
 
 
                     <i:Interaction.Behaviors>
@@ -190,8 +223,8 @@
                 </ItemsControl>
             </ScrollViewer>
             <Button Grid.Row="1"
-                    Height="24"
                     Width="60"
+                    Height="24"
                     Margin="0,0,10,0"
                     HorizontalAlignment="Right"
                     Command="{Binding SaveConfigurationCommand}"

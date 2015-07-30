@@ -10,8 +10,8 @@ namespace Nova.LED.Infrastructure.Models
         private string _id;
         private string _indexLocation;
         private string _COMIndex;
-        private ushort _senderIndex;
-        private ushort _portIndex;
+        private byte _senderIndex;
+        private byte _portIndex;
         private List<LEDBox> _boxes;
 
         public LEDBoxGroup()
@@ -40,13 +40,13 @@ namespace Nova.LED.Infrastructure.Models
             }
 
         }
-        public ushort SenderIndex
+        public byte SenderIndex
         {
             get { return _senderIndex; }
             set { _senderIndex = value; }
         }
 
-        public ushort PortIndex
+        public byte PortIndex
         {
             get { return _portIndex; }
             set { _portIndex = value; }

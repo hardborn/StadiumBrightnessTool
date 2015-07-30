@@ -36,7 +36,7 @@ namespace Nova.LED.Modules.Box.Services
         {
 
             StartServer();
-
+            Thread.Sleep(2000);
             _uiDispatcher.Invoke(new Action(() =>
             {
                 try

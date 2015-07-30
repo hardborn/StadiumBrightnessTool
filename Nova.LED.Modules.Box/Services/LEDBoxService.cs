@@ -16,6 +16,8 @@ using System.Windows.Threading;
 namespace Nova.LED.Modules.Box.Services
 {
     [Export(typeof(ILEDBoxService))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
+
     public class LEDBoxService : ILEDBoxService
     {
 
@@ -42,12 +44,18 @@ namespace Nova.LED.Modules.Box.Services
                 {
                     if (info == null || info.AllInfo == null || info.AllInfo.AllInfoDict == null)
                     {
+                        _waitForReadData.Set();
                         return;
                     }
 
                     _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent() { Message = "Get LED Boxes Data" });
                     var currentCOMAndHWBaseInfo = info.AllInfo.AllInfoDict.ElementAt(0);
                     var currentHWBaseInfo = currentCOMAndHWBaseInfo.Value;
+                    if (currentHWBaseInfo == null || currentHWBaseInfo.LEDDisplayInfoList == null)
+                    {
+                        _waitForReadData.Set();
+                        return;
+                    }
                     foreach (var item in currentHWBaseInfo.LEDDisplayInfoList)
                     {
                         foreach (var receivingCardItem in item.GetAreaScanBdList(new System.Drawing.Rectangle(item.GetScreenPosition(), item.GetScreenSize())))
@@ -66,9 +74,10 @@ namespace Nova.LED.Modules.Box.Services
                             _boxes.Add(box);
                         }
                     }
-                    var boxGroupList = _boxes.GroupBy(x => new { x.SenderIndex, x.PortIndex })
+                    var boxGroupList = _boxes.GroupBy(x => new {x.COMIndex, x.SenderIndex, x.PortIndex })
                                              .Select(y => new LEDBoxGroup()
                                              {
+                                                 COMIndex = y.Key.COMIndex,
                                                  SenderIndex = y.Key.SenderIndex,
                                                  PortIndex = y.Key.PortIndex,
                                                  Boxes = y.ToList()

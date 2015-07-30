@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace Nova.LED.Modules.Box.Services
 {
+    [Export(typeof(IBrightnessService))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
+
     public class BrightnessService : IBrightnessService
     {
         private const char CommonProtocalTagSeperate = '#';
@@ -38,7 +41,7 @@ namespace Nova.LED.Modules.Box.Services
         }
 
 
-        public Task<int> GetBrightnessAsync(string COMIndex, byte senderIndex, byte portIndex, byte connectIndex)
+        public Task<int> GetBrightnessAsync(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex)
         {
             var tcs = new TaskCompletionSource<int>();
             var requestData = TGProtocolParser.ReadGlobalBrightness(COMIndex,
@@ -60,7 +63,7 @@ namespace Nova.LED.Modules.Box.Services
         }
 
 
-        public Task<byte> GetRGBRedAsync(string COMIndex, byte senderIndex, byte portIndex, byte connectIndex)
+        public Task<byte> GetRGBRedAsync(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex)
         {
             var tcs = new TaskCompletionSource<byte>();
             var requestData = TGProtocolParser.ReadRedBrightness(COMIndex,
@@ -81,7 +84,7 @@ namespace Nova.LED.Modules.Box.Services
             return tcs.Task;
         }
 
-        public Task<byte> GetRGBGreenAsync(string COMIndex, byte senderIndex, byte portIndex, byte connectIndex)
+        public Task<byte> GetRGBGreenAsync(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex)
         {
             var tcs = new TaskCompletionSource<byte>();
             var requestData = TGProtocolParser.ReadGreenBrightness(COMIndex,
@@ -102,7 +105,7 @@ namespace Nova.LED.Modules.Box.Services
             return tcs.Task;
         }
 
-        public Task<byte> GetRGBBlueAsync(string COMIndex, byte senderIndex, byte portIndex, byte connectIndex)
+        public Task<byte> GetRGBBlueAsync(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex)
         {
             var tcs = new TaskCompletionSource<byte>();
             var requestData = TGProtocolParser.ReadBlueBrightness(COMIndex,
@@ -123,7 +126,7 @@ namespace Nova.LED.Modules.Box.Services
             return tcs.Task;
         }
 
-        public Task<bool> SetBrightness(string COMIndex, byte senderIndex, byte portIndex, byte connectIndex, byte value)
+        public Task<bool> SetBrightness(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex, byte value)
         {
             var tcs = new TaskCompletionSource<bool>();
             var requestData = TGProtocolParser.SetGlobalBrightness(COMIndex,
@@ -147,7 +150,7 @@ namespace Nova.LED.Modules.Box.Services
             return tcs.Task;
         }
 
-        public Task<bool> SetRGBRed(string COMIndex, byte senderIndex, byte portIndex, byte connectIndex, byte value)
+        public Task<bool> SetRGBRed(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex, byte value)
         {
             var tcs = new TaskCompletionSource<bool>();
             var requestData = TGProtocolParser.SetRedBrightness(COMIndex,
@@ -171,7 +174,7 @@ namespace Nova.LED.Modules.Box.Services
             return tcs.Task; 
         }
 
-        public Task<bool> SetRGBGreen(string COMIndex, byte senderIndex, byte portIndex, byte connectIndex, byte value)
+        public Task<bool> SetRGBGreen(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex, byte value)
         {
             var tcs = new TaskCompletionSource<bool>();
             var requestData = TGProtocolParser.SetGreenBrightness(COMIndex,
@@ -195,7 +198,7 @@ namespace Nova.LED.Modules.Box.Services
             return tcs.Task; 
         }
 
-        public Task<bool> SetRGBBlue(string COMIndex, byte senderIndex, byte portIndex, byte connectIndex, byte value)
+        public Task<bool> SetRGBBlue(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex, byte value)
         {
             var tcs = new TaskCompletionSource<bool>();
             var requestData = TGProtocolParser.SetBlueBrightness(COMIndex,

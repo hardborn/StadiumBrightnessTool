@@ -19,6 +19,12 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
     {
         private LEDBoxGroup _boxGroup;
 
+
+        public BoxGroupViewModel()
+        {
+
+        }
+
         public BoxGroupViewModel(LEDBoxGroup boxGroup)
         {
             _boxGroup = boxGroup;
@@ -42,6 +48,33 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             }
         }
 
+
+        public int BoxCount 
+        {
+            get { return _boxes.Count; }
+           
+        }
+
+        public byte PortIndex
+        {
+            get
+            {
+                return _boxGroup.PortIndex;
+            }
+        }
+
+        public byte SenderIndex
+        {
+            get
+            {
+                return _boxGroup.SenderIndex;
+            }
+        }
+
+        public string COMIndex
+        {
+            get { return _boxGroup.COMIndex; }
+        }
 
         private string _indexLocation = string.Empty;
         public string IndexLocation

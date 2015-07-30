@@ -1,10 +1,13 @@
 ﻿using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.ServiceLocation;
+using Nova.LED.Infrastructure.Interfaces;
 using Nova.LED.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Nova.LED.StadiumBrightnessTool.ViewModel
@@ -13,12 +16,18 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
     {
 
         private LEDBox _LEDBox;
+        private Timer _readDataTimer;
+        private IBrightnessService _brightnessService;
 
         public BoxViewModel(LEDBox box)
         {
             _LEDBox = box;
             SelectBoxCommand = new DelegateCommand<object>(SelectBox);
+            _brightnessService = ServiceLocator.Current.GetInstance<IBrightnessService>();
+            _readDataTimer = new Timer(ReadData, null, 0, 1000 * 30);
         }
+
+       
 
 
         public const string IndexLocationPropertyName = "IndexLocation";
@@ -128,9 +137,31 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             get { return _LEDBox.COMIndex; }
         }
 
-        private void SelectBox(object obj)
+        private int _currentBrightness;
+        public int CurrentBrightness 
+        {
+            get { return _currentBrightness; }
+            set
+            {
+                SetProperty(ref _currentBrightness, value);
+            }
+        }
+
+
+        private  void SelectBox(object obj)
         {
             IsSelected = !IsSelected;
+        }
+
+        private async void ReadData(object state)
+        {
+            CurrentBrightness = await _brightnessService.GetBrightnessAsync(COMIndex, SenderIndex, PortIndex, ConnectIndex);
+        }
+
+        public async Task<bool> SetBrightness(byte value)
+        {
+           bool result = await _brightnessService.SetBrightness(COMIndex, SenderIndex, PortIndex, ConnectIndex,value);
+           return result;
         }
 
 

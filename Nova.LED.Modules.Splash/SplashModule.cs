@@ -4,6 +4,7 @@ using Microsoft.Practices.ServiceLocation;
 using Nova.LED.Infrastructure.Interfaces;
 using Nova.LED.Modules.Splash.Events;
 using Nova.LED.Modules.Splash.View;
+using Nova.LED.Modules.Splash.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -45,15 +46,22 @@ namespace Nova.LED.Modules.Splash
                     (Action)(() =>
                     {
                         var _splashView = ServiceLocator.Current.GetInstance<SplashView>();//SplashView必须在此线程创建
-                        var dispatcher = _splashView.Dispatcher;
-                        dispatcher.BeginInvoke((Action)_splashView.Show);
+                        //var dispatcher = _splashView.Dispatcher;
+                        //dispatcher.BeginInvoke((Action)_splashView.Show);
                         _eventAggregator.GetEvent<CloseSplashEvent>().Subscribe(
                           e => _splashView.Dispatcher.BeginInvoke((Action)_splashView.Close), ThreadOption.PublisherThread, true);
-
+                        _splashView.Show();
                         _waitForCreation.Set();
                     }));
+                try
+                {
+                    Dispatcher.Run();
 
-                Dispatcher.Run();
+                }
+                catch (Exception ex)
+                {
+                    
+                }
             };
             var thread = new Thread(showSplash) { Name = "Splash Thread", IsBackground = true };
             thread.SetApartmentState(ApartmentState.STA);

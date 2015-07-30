@@ -23,7 +23,7 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
     {
         private ILEDBoxService _LEDBoxService;
         private IEventAggregator _eventAggregator;
-       
+
 
 
         public LocationProfileViewModel()
@@ -33,10 +33,12 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             BoxGroupsToolItem = new ObservableCollection<BoxGroupToolItemViewModel>();
             PopulateBoxGroups();
             SaveConfigurationCommand = new DelegateCommand(SaveConfiguration);
+            LoadConfigurationCommand = new DelegateCommand(LoadConfiguration);
+            SetBrightnessCommand = new DelegateCommand<object>(SetBrightness);
         }
 
 
-        private ObservableCollection<BoxGroupViewModel> _boxGroups;        
+        private ObservableCollection<BoxGroupViewModel> _boxGroups;
         public ObservableCollection<BoxGroupViewModel> BoxGroups
         {
             get { return _boxGroups; }
@@ -62,6 +64,10 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
         }
 
         public DelegateCommand SaveConfigurationCommand { get; set; }
+
+        public DelegateCommand LoadConfigurationCommand { get; set; }
+
+        public DelegateCommand<object> SetBrightnessCommand { get; set; }
 
         private void PopulateBoxGroups()
         {
@@ -97,7 +103,10 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
                 foreach (var group in BoxGroups)
                 {
                     XElement boxGroupElement = new XElement("BoxGroup");
-                    XElement boxGroupInfoElement = new XElement("BoxGroupInfo", 
+                    XElement boxGroupInfoElement = new XElement("BoxGroupInfo",
+                        new XAttribute("COMIndex", group.COMIndex),
+                        new XAttribute("SenderIndex", group.SenderIndex),
+                        new XAttribute("PortIndex", group.PortIndex),
                         new XAttribute("IndexLocation", group.IndexLocation),
                         new XAttribute("ElementPxPointX", group.ElementPxPointX),
                         new XAttribute("ElementPxPointY", group.ElementPxPointY));
@@ -130,6 +139,179 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             }
         }
 
+
+        private void LoadConfiguration()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "配置文件 (*.xml)|*.xml";
+            dialog.DefaultExt = ".xml";
+            dialog.Title = "选择配置文件";
+
+            if (dialog.ShowDialog() == true)
+            {
+                string filename = dialog.FileName;
+                BoxGroups = LoadComponentXml(filename);
+            }
+        }
+
+
+        private static ObservableCollection<BoxGroupViewModel> LoadComponentXml(string filePath)
+        {
+            var boxGroupViewModelList = new ObservableCollection<BoxGroupViewModel>();
+            XDocument doc = XDocument.Load(filePath);
+            if (doc != null)
+            {
+                IEnumerable<XElement> elementlist = doc.Root.Elements("BoxGroup");
+
+                foreach (var item in elementlist)
+                {
+
+                    ObservableCollection<BoxViewModel> boxViewModelList = new ObservableCollection<BoxViewModel>();
+
+                    List<XElement> infoElementList = item.Elements("BoxGroupInfo").ToList();
+                    List<XElement> pointElementList = item.Elements("Boxes").ToList();
+
+                    for (int count = 0; count < infoElementList.Count; count++)
+                    {
+
+                        LEDBoxGroup boxGroup = new LEDBoxGroup();
+                        List<LEDBox> boxList = new List<LEDBox>();
+                        foreach (var point in pointElementList[count].Elements("Box"))
+                        {
+                            XAttribute COMIndexAttr = point.Attribute("COMIndex");
+                            XAttribute SenderIndexAttr = point.Attribute("SenderIndex");
+                            XAttribute PortIndexAttr = point.Attribute("PortIndex");
+                            XAttribute ConnectIndexAttr = point.Attribute("ConnectIndex");
+                            XAttribute WidthAttr = point.Attribute("Width");
+                            XAttribute HeightAttr = point.Attribute("Height");
+                            XAttribute XInPortAttr = point.Attribute("XInPort");
+                            XAttribute YInPortAttr = point.Attribute("YInPort");
+                            XAttribute XAttr = point.Attribute("X");
+                            XAttribute YAttr = point.Attribute("Y");
+
+                            LEDBox box = new LEDBox();
+                            box.COMIndex = COMIndexAttr.Value;
+                            box.SenderIndex = Convert.ToByte(SenderIndexAttr.Value);
+                            box.PortIndex = Convert.ToByte(PortIndexAttr.Value);
+                            box.ConnectIndex = Convert.ToByte(ConnectIndexAttr.Value);
+                            box.Width = Convert.ToDouble(WidthAttr.Value);
+                            box.Height = Convert.ToDouble(HeightAttr.Value);
+                            box.XInPort = Convert.ToUInt16(XInPortAttr.Value);
+                            box.YInPort = Convert.ToUInt16(YInPortAttr.Value);
+                            box.X = Convert.ToUInt16(XAttr.Value);
+                            box.Y = Convert.ToUInt16(YAttr.Value);
+
+                            boxList.Add(box);
+
+                            //BoxViewModel boxViewModel = new BoxViewModel(box);
+                            //boxViewModelList.Add(boxViewModel);
+                        }
+                        boxGroup.COMIndex = boxList[0].COMIndex;
+                        boxGroup.SenderIndex = boxList[0].SenderIndex;
+                        boxGroup.PortIndex = boxList[0].PortIndex;
+                        boxGroup.Boxes = boxList;
+
+                        BoxGroupViewModel elementViewModel = new BoxGroupViewModel(boxGroup);
+
+                        XAttribute sysIndexLocationAttr = infoElementList[count].Attribute("IndexLocation");
+                        if (sysIndexLocationAttr != null)
+                            elementViewModel.IndexLocation = sysIndexLocationAttr.Value;
+
+                        XAttribute sysElementPxPointXAttr = infoElementList[count].Attribute("ElementPxPointX");
+                        if (sysElementPxPointXAttr != null)
+                            elementViewModel.ElementPxPointX = double.Parse(sysElementPxPointXAttr.Value);
+
+                        XAttribute elementPxPointYAttr = infoElementList[count].Attribute("ElementPxPointY");
+                        if (elementPxPointYAttr != null)
+                            elementViewModel.ElementPxPointY = double.Parse(elementPxPointYAttr.Value);
+
+                        boxGroupViewModelList.Add(elementViewModel);
+                    }
+
+
+                    #region load
+                    //foreach (var infoElement in infoElementList)
+                    //{
+
+                    //    LEDBoxGroup groupitem = new LEDBoxGroup();
+
+
+                    //    XAttribute sysIndexLocationAttr = infoElement.Attribute("IndexLocation");
+                    //    if (sysIndexLocationAttr != null)
+                    //        elementViewModel.IndexLocation = sysIndexLocationAttr.Value;
+
+                    //    XAttribute sysElementPxPointXAttr = infoElement.Attribute("ElementPxPointX");
+                    //    if (sysElementPxPointXAttr != null)
+                    //        elementViewModel.ElementPxPointX = double.Parse(sysElementPxPointXAttr.Value);
+
+                    //    XAttribute elementPxPointYAttr = infoElement.Attribute("ElementPxPointY");
+                    //    if (elementPxPointYAttr != null)
+                    //        elementViewModel.ElementPxPointY = double.Parse(elementPxPointYAttr.Value);
+
+                    //}
+
+                    //IEnumerable<XElement> pointElementList = item.Elements("Boxes");
+                    //foreach (var pointElement in pointElementList)
+                    //{
+
+                    //    foreach (var point in pointElement.Elements("Box"))
+                    //    {
+                    //        XAttribute COMIndexAttr = point.Attribute("COMIndex");
+                    //        XAttribute SenderIndexAttr = point.Attribute("SenderIndex");
+                    //        XAttribute PortIndexAttr = point.Attribute("PortIndex");
+                    //        XAttribute ConnectIndexAttr = point.Attribute("ConnectIndex");
+                    //        XAttribute WidthAttr = point.Attribute("Width");
+                    //        XAttribute HeightAttr = point.Attribute("Height");
+                    //        XAttribute XInPortAttr = point.Attribute("XInPort");
+                    //        XAttribute YInPortAttr = point.Attribute("YInPort");
+                    //        XAttribute XAttr = point.Attribute("X");
+                    //        XAttribute YAttr = point.Attribute("Y");
+
+                    //        LEDBox box = new LEDBox();
+                    //        box.COMIndex = COMIndexAttr.Value;
+                    //        box.SenderIndex = Convert.ToByte(SenderIndexAttr.Value);
+                    //        box.PortIndex = Convert.ToByte(PortIndexAttr.Value);
+                    //        box.ConnectIndex = Convert.ToByte(ConnectIndexAttr.Value);
+                    //        box.Width = Convert.ToDouble(WidthAttr.Value);
+                    //        box.Height = Convert.ToDouble(HeightAttr.Value);
+                    //        box.XInPort = Convert.ToUInt16(XInPortAttr.Value);
+                    //        box.YInPort = Convert.ToUInt16(YInPortAttr.Value);
+                    //        box.X = Convert.ToUInt16(XAttr.Value);
+                    //        box.Y = Convert.ToUInt16(YAttr.Value);
+
+                    //        BoxViewModel boxViewModel = new BoxViewModel(box);
+                    //        boxViewModelList.Add(boxViewModel);
+                    //    }
+                    //}
+
+                    #endregion
+
+                    //elementViewModel.LEDBoxes = boxViewModelList;
+                    //boxGroupViewModelList.Add(elementViewModel);
+                }
+            }
+            return boxGroupViewModelList;
+        }
+
+
+        private async void SetBrightness(object value)
+        {
+
+            byte brightnessValue = Convert.ToByte(value);// byte.Parse(value.ToString());
+            foreach (var groupViewModel in BoxGroups)
+            {
+                foreach (var boxViewModel in groupViewModel.LEDBoxes)
+                {
+                    if (boxViewModel.IsSelected)
+                    {
+                        bool result = await boxViewModel.SetBrightness((byte)(255.0/100.0*brightnessValue));
+                        System.Diagnostics.Debug.WriteLine(result);
+                    }
+                }
+            }
+        }
+
+
         #region IDragable
 
         public Type DataType
@@ -144,13 +326,13 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             if (boxGroup != null)
             {
                 var boxGroupViewModel = new BoxGroupViewModel(boxGroup);
-                
+
                 if (!BoxGroups.Any(g => g.IndexLocation == boxGroupViewModel.IndexLocation))
                 {
                     boxGroupViewModel.ElementPxPointX = position.X;
                     boxGroupViewModel.ElementPxPointY = position.Y;
                     BoxGroups.Add(boxGroupViewModel);
-                }               
+                }
             }
         }
 

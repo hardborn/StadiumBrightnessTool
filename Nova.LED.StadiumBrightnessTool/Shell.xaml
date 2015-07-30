@@ -4,6 +4,8 @@
                       xmlns:Controls="http://hardborn.com/UI/MetroUI/Controls"
                       xmlns:local="clr-namespace:Nova.LED.StadiumBrightnessTool"
                       Title="Stadium Brightness Tool"
+                      Width="1000"
+                      Height="600"
                       MinWidth="1000"
                       MinHeight="600"
                       WindowStartupLocation="CenterScreen">
@@ -24,14 +26,16 @@
                   HorizontalAlignment="Left"
                   VerticalAlignment="Stretch">
                 <MenuItem Header="File">
-                    <MenuItem Header="Open" />
-                    <MenuItem Header="Save" />
+                    <MenuItem Command="{Binding DataContext.LoadConfigurationCommand, ElementName=contentTab}" Header="Open" />
+                    <MenuItem Command="{Binding DataContext.SaveConfigurationCommand, ElementName=contentTab}" Header="Save" />
                 </MenuItem>
             </Menu>
-            <local:LayoutTab Grid.Row="1" />
-            <StatusBar Grid.Row="2"
+            <local:LayoutTab x:Name="contentTab"
+                             Grid.Row="1"
+                             Margin="10,10" />
+            <!--<StatusBar Grid.Row="2"
                        Height="24"
-                       HorizontalAlignment="Stretch" />
+                       HorizontalAlignment="Stretch" />-->
         </Grid>
 
     </Controls:MetroContentControl>
