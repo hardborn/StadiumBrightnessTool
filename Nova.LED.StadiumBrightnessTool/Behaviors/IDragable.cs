@@ -9,5 +9,7 @@ namespace Nova.LED.StadiumBrightnessTool.Behaviors
     {
         Type DataType { get; }
         void Copy(object data);
+        object Data { get; }
+
     }
 }

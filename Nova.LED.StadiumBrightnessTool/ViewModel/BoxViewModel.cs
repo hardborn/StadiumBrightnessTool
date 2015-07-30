@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Nova.LED.StadiumBrightnessTool.ViewModel
 {
-    public class LEDBoxViewModel : BindableBase
+    public class BoxViewModel : BindableBase
     {
 
         private LEDBox _LEDBox;
 
-        public LEDBoxViewModel(LEDBox box)
+        public BoxViewModel(LEDBox box)
         {
             _LEDBox = box;
             SelectBoxCommand = new DelegateCommand<object>(SelectBox);
@@ -52,6 +52,80 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             {
                 SetProperty(ref _isSelected, value);
             }
+        }
+
+        public string ID
+        {
+            get { return _LEDBox.ID; }
+        }
+
+
+
+        public double Width
+        {
+            get { return _LEDBox.Width; }
+        }
+
+
+
+
+        public double Height
+        {
+            get { return _LEDBox.Height; }
+        }
+
+        public ushort ConnectIndex
+        {
+            get
+            {
+                return _LEDBox.ConnectIndex;
+            }
+        }
+        public byte PortIndex
+        {
+            get
+            {
+                return _LEDBox.PortIndex;
+            }
+        }
+
+        public byte SenderIndex
+        {
+            get
+            {
+                return _LEDBox.SenderIndex;
+            }
+        }
+
+        public ushort X
+        {
+            get
+            {
+                return _LEDBox.X;
+            }
+        }
+
+        public ushort Y
+        {
+            get
+            {
+                return _LEDBox.Y;
+            }
+        }
+
+        public ushort XInPort
+        {
+            get { return _LEDBox.XInPort; }
+        }
+
+        public ushort YInPort
+        {
+            get { return _LEDBox.YInPort; }
+        }
+
+        public string COMIndex
+        {
+            get { return _LEDBox.COMIndex; }
         }
 
         private void SelectBox(object obj)

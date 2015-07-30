@@ -142,10 +142,11 @@
     </ApplicationDefinition>
     <Compile Include="Behaviors\FrameworkElementAdorner.cs" />
     <Compile Include="Behaviors\FrameworkElementDragBehavior.cs" />
-    <Compile Include="Behaviors\FramworkElementDropBehavior.cs" />
+    <Compile Include="Behaviors\FrameworkElementDropBehavior.cs" />
     <Compile Include="Behaviors\IDragable.cs" />
     <Compile Include="Behaviors\IDropable.cs" />
     <Compile Include="Controls\DesignerCanvas\DesignerCanvas.Commands.cs" />
+    <Compile Include="ViewModel\BoxGroupToolItemViewModel.cs" />
     <Compile Include="View\Settings.xaml.cs" />
     <Compile Include="View\SettingsAppearance.xaml.cs" />
     <Compile Include="ViewModel\SettingsAppearanceViewModel.cs" />
@@ -201,7 +202,7 @@
     <Compile Include="DragObject.cs" />
     <Compile Include="StadiumBrightnessBootstrapper.cs" />
     <Compile Include="ViewModel\BoxGroupViewModel.cs" />
-    <Compile Include="ViewModel\LEDBoxViewModel.cs">
+    <Compile Include="ViewModel\BoxViewModel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModel\LocationProfileViewModel.cs" />

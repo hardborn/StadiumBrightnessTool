@@ -9,10 +9,108 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:view="clr-namespace:Nova.LED.StadiumBrightnessTool.View"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:prism="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity"
+             xmlns:local="clr-namespace:Nova.LED.StadiumBrightnessTool.Controls" 
              d:DesignHeight="300"
              d:DesignWidth="300"
              mc:Ignorable="d">
-    <UserControl.Resources />
+    <UserControl.Resources>
+        <Style x:Key="BoxGroupDesignItemStyle" TargetType="{x:Type ItemsControl}">
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Border Background="{TemplateBinding Panel.Background}"
+                            BorderBrush="{TemplateBinding Border.BorderBrush}"
+                            BorderThickness="1"
+                            Padding="{TemplateBinding Control.Padding}"
+                            SnapsToDevicePixels="True">
+                            <Rectangle Name="boxRectangle"
+                                   Width="32"
+                                   Height="32"
+                                   Fill="Orange"
+                                   IsHitTestVisible="True"
+                                   SnapsToDevicePixels="true"
+                                   StrokeDashArray="2"
+                                   StrokeThickness="1">
+                            </Rectangle>
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsSelected}">
+                                <DataTrigger.Value>
+                                    <sys:Boolean>true</sys:Boolean>
+                                </DataTrigger.Value>
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="boxRectangle" Property="Fill" Value="#FC0FCB2F" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsSelected}">
+                                <DataTrigger.Value>
+                                    <sys:Boolean>false</sys:Boolean>
+                                </DataTrigger.Value>
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="boxRectangle" Property="Fill" Value="Orange" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ConfigurationItemsControlStyle" TargetType="ItemsControl">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <Border Background="White"
+                            Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}"
+                            ClipToBounds="True">
+                            <ItemsPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <canvas:ZoomableCanvas  x:Name="ZoomCanvas" 
+                                                   ApplyTransform="True"
+                                                   RealizationLimit="1000"
+                                                   RealizationPriority="Background"
+                                                   RealizationRate="10"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <local:DesignerItem >
+                            <ItemsControl ItemsSource="{Binding DataContext.LEDBoxes,
+                                                                RelativeSource={RelativeSource TemplatedParent}}"
+                                          SnapsToDevicePixels="True"
+                                          Style="{StaticResource BoxGroupDesignItemStyle}" />
+                        </local:DesignerItem>
+
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style>
+                        <Setter Property="Canvas.Left" Value="{Binding ElementPxPointX}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding ElementPxPointY}"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="60" />
@@ -26,12 +124,11 @@
                            HorizontalAlignment="Center"
                            Text="LEDBox Group" />
                 <!--  Style="{StaticResource Heading2}"  -->
-                <ListBox ItemsSource="{Binding BoxGroups}"
-                         SelectedItem="{Binding CurrentBoxGroup}"
+                <ListBox ItemsSource="{Binding BoxGroupsToolItem}"
+                         SelectedItem="{Binding CurrentBoxGroupToolItem}"
                          SnapsToDevicePixels="True">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <!--<control:LEDBoxGroupToolItem />-->
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -77,59 +174,27 @@
                 <RowDefinition Height="40" />
             </Grid.RowDefinitions>
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <!--<control:DesignerCanvas x:Name="MyDesigner"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        AllowDrop="True"
-                                        ApplyTransform="True"
-                                        Background="#25000000"
-                                        FocusVisualStyle="{x:Null}"
-                                        Focusable="true" />-->
-
                 <ItemsControl HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
                               AllowDrop="True"
+                              Style="{StaticResource ConfigurationItemsControlStyle}"
                               Background="WhiteSmoke"
-                              DataContext="{Binding CurrentBoxGroup}"
                               ItemsSource="{Binding BoxGroups}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <canvas:ZoomableCanvas ApplyTransform="True"
-                                                   RealizationLimit="1000"
-                                                   RealizationPriority="Background"
-                                                   RealizationRate="10" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
 
-                    <ItemsControl.ItemContainerStyle>
-                        <Style>
-                            <Setter Property="Canvas.Left" Value="{Binding ElementPxPointX}" />
-                            <Setter Property="Canvas.Top" Value="{Binding ElementPxPointY}" />
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
-
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <ItemsControl ItemsSource="{Binding DataContext.LEDBoxes,
-                                                                RelativeSource={RelativeSource TemplatedParent}}"
-                                          SnapsToDevicePixels="True"
-                                          Style="{StaticResource BoxGroupDesignItemStyle}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
 
                     <i:Interaction.Behaviors>
                         <behaviors:FrameworkElementDragBehavior />
-                        <behaviors:FramworkElementDropBehavior />
+                        <behaviors:FrameworkElementDropBehavior />
                     </i:Interaction.Behaviors>
 
                 </ItemsControl>
             </ScrollViewer>
             <Button Grid.Row="1"
                     Height="24"
+                    Width="60"
                     Margin="0,0,10,0"
                     HorizontalAlignment="Right"
-                    Command="{x:Static ApplicationCommands.Save}"
-                    CommandTarget="{Binding ElementName=MyDesigner}"
+                    Command="{Binding SaveConfigurationCommand}"
                     Content="Save" />
         </Grid>
 

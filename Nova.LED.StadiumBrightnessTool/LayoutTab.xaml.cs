@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nova.LED.StadiumBrightnessTool.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace Nova.LED.StadiumBrightnessTool
         public LayoutTab()
         {
             InitializeComponent();
+            this.DataContext = new LocationProfileViewModel();
         }
     }
 }

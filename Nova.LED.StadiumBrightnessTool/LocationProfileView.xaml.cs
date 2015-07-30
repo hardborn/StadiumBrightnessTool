@@ -24,8 +24,9 @@ namespace Nova.LED.StadiumBrightnessTool
     {
         public LocationProfileView()
         {
-            InitializeComponent();
-            this.DataContext = new LocationProfileViewModel();
+            InitializeComponent();           
         }
+
+      
     }
 }

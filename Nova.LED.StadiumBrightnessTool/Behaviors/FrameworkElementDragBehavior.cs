@@ -71,8 +71,9 @@ namespace Nova.LED.StadiumBrightnessTool.Behaviors
                         //    data.SetData(dragObject.DataType, this.AssociatedObject.DataContext);
                         //    DragDrop.DoDragDrop(this.AssociatedObject, data, DragDropEffects.Copy);
                         //}
-
-                        DragDrop.DoDragDrop(this.AssociatedObject, this.AssociatedObject.DataContext, DragDropEffects.Copy);
+                        DataObject data = new DataObject();
+                        data.SetData(dragObject.DataType, dragObject.Data);
+                        DragDrop.DoDragDrop(this.AssociatedObject, data, DragDropEffects.Copy);
                     }
                 }
                

@@ -6,10 +6,11 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
+using System.Windows.Media;
 
 namespace Nova.LED.StadiumBrightnessTool.Behaviors
 {
-    public class FramworkElementDropBehavior : Behavior<FrameworkElement>
+    public class FrameworkElementDropBehavior : Behavior<FrameworkElement>
     {
         private Type dataType;
         private FrameworkElementAdorner adorner;
@@ -22,6 +23,15 @@ namespace Nova.LED.StadiumBrightnessTool.Behaviors
             this.AssociatedObject.DragOver += AssociatedObject_DragOver;
             this.AssociatedObject.DragLeave += AssociatedObject_DragLeave;
             this.AssociatedObject.Drop += AssociatedObject_Drop;
+        }
+
+        protected override void OnDetaching()
+        {
+            base.OnDetaching();
+            this.AssociatedObject.DragEnter -= AssociatedObject_DragEnter;
+            this.AssociatedObject.DragOver -= AssociatedObject_DragOver;
+            this.AssociatedObject.DragLeave -= AssociatedObject_DragLeave;
+            this.AssociatedObject.Drop -= AssociatedObject_Drop;
         }
 
         void AssociatedObject_DragEnter(object sender, DragEventArgs e)
@@ -71,22 +81,42 @@ namespace Nova.LED.StadiumBrightnessTool.Behaviors
             {
                 if (e.Data.GetDataPresent(this.dataType))
                 {
-                    //MapSandboxControl sandboxView = this.AssociatedObject as MapSandboxControl;
-                    //if (sandboxView != null)
-                    //{
-                    //    ControlTemplate template = sandboxView.Template;
-                    //    ZoomableCanvas mapCanvas = template.FindName("MapCanvas", sandboxView) as ZoomableCanvas;
-                    //    IDropable target = this.AssociatedObject.DataContext as IDropable;
-                    //    Point position = e.GetPosition(mapCanvas);
-                    //    target.Drop(e.Data.GetData(dataType), position);
-                    //}
-                    
+                    ItemsControl sandboxView = this.AssociatedObject as ItemsControl;
+                    if (sandboxView != null)
+                    {
+                        ItemsPresenter itemsPresenter = GetFirstVisualChild<ItemsPresenter>(sandboxView);
+                        ZoomableCanvas mapCanvas = GetFirstVisualChild<ZoomableCanvas>(itemsPresenter);
+                        IDropable target = this.AssociatedObject.DataContext as IDropable;
+                        Point position = e.GetPosition(mapCanvas);
+                        target.Drop(e.Data.GetData(dataType), position);
+                    }                    
                 }
             }
             if (this.adorner != null)
                 this.adorner.Remove();
 
             e.Handled = false ;
+        }
+
+        private static T GetFirstVisualChild<T>(DependencyObject parent) where T : Visual
+        {
+            T child = default(T);
+
+            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < numVisuals; i++)
+            {
+                Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
+                child = v as T;
+                if (child == null)
+                {
+                    child = GetFirstVisualChild<T>(v);
+                }
+                if (child != null)
+                {
+                    break;
+                }
+            }
+            return child;
         }
     }
 }

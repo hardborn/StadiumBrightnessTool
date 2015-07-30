@@ -244,13 +244,14 @@
                         <ContentPresenter x:Name="PART_ContentPresenter"
                                           Margin="{TemplateBinding ContentControl.Padding}"
                                           HorizontalAlignment="Stretch"
-                                          VerticalAlignment="Stretch">
-                            <ContentPresenter.Content>
+                                          VerticalAlignment="Stretch"
+                                          Content="{TemplateBinding ContentControl.Content}">
+                            <!--<ContentPresenter.Content>
                                 <ItemsControl ItemsSource="{Binding DataContext.LEDBoxes,
                                                                     RelativeSource={RelativeSource TemplatedParent}}"
                                               SnapsToDevicePixels="True"
                                               Style="{StaticResource BoxGroupDesignItemStyle}" />
-                            </ContentPresenter.Content>
+                            </ContentPresenter.Content>-->
                         </ContentPresenter>
                     </Grid>
                     <ControlTemplate.Triggers>

@@ -3,14 +3,132 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:behaviors="clr-namespace:Nova.LED.StadiumBrightnessTool.Behaviors"
+             xmlns:canvas="clr-namespace:System.Windows.Controls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:prism="clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity"
              d:DesignHeight="600"
              d:DesignWidth="1000"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="BoxGroupDesignItemStyle" TargetType="{x:Type ItemsControl}">
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Border Background="{TemplateBinding Panel.Background}"
+                            BorderBrush="{TemplateBinding Border.BorderBrush}"
+                            BorderThickness="1"
+                            Padding="{TemplateBinding Control.Padding}"
+                            SnapsToDevicePixels="True">
+                            <Rectangle Name="boxRectangle"
+                                   Width="32"
+                                   Height="32"
+                                   Fill="Orange"
+                                   IsHitTestVisible="True"
+                                   SnapsToDevicePixels="true"
+                                   StrokeDashArray="2"
+                                   StrokeThickness="1">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <prism:InvokeCommandAction Command="{Binding SelectBoxCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Rectangle>
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsSelected}">
+                                <DataTrigger.Value>
+                                    <sys:Boolean>true</sys:Boolean>
+                                </DataTrigger.Value>
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="boxRectangle" Property="Fill" Value="#FC0FCB2F" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsSelected}">
+                                <DataTrigger.Value>
+                                    <sys:Boolean>false</sys:Boolean>
+                                </DataTrigger.Value>
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="boxRectangle" Property="Fill" Value="Orange" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ConfigurationItemsControlStyle" TargetType="ItemsControl">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <Border Background="White"
+                            Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}"
+                            ClipToBounds="True">
+                            <ItemsPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <canvas:ZoomableCanvas  x:Name="ZoomCanvas" 
+                                                   ApplyTransform="True"
+                                                   RealizationLimit="1000"
+                                                   RealizationPriority="Background"
+                                                   RealizationRate="10"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <ItemsControl ItemsSource="{Binding DataContext.LEDBoxes,
+                                                                RelativeSource={RelativeSource TemplatedParent}}"
+                                          SnapsToDevicePixels="True"
+                                          Style="{StaticResource BoxGroupDesignItemStyle}" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style>
+                        <Setter Property="Canvas.Left" Value="{Binding ElementPxPointX}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding ElementPxPointY}"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ItemsControl HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              AllowDrop="True"
+                              Style="{StaticResource ConfigurationItemsControlStyle}"
+                              Background="WhiteSmoke"
+                              ItemsSource="{Binding BoxGroups}">
+
+
+                <i:Interaction.Behaviors>
+                    <behaviors:FrameworkElementDragBehavior />
+                    <behaviors:FrameworkElementDropBehavior />
+                </i:Interaction.Behaviors>
+            </ItemsControl>
+        </ScrollViewer>
         <StackPanel Grid.Row="1"
                     Width="340"
                     Margin="0,20"
