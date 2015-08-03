@@ -1,8 +1,10 @@
 ﻿using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
+using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Win32;
+using Nova.LED.Infrastructure;
 using Nova.LED.Infrastructure.Interfaces;
 using Nova.LED.Infrastructure.Models;
 using Nova.LED.StadiumBrightnessTool.Behaviors;
@@ -13,6 +15,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Xml.Linq;
 
 namespace Nova.LED.StadiumBrightnessTool.ViewModel
@@ -22,20 +25,27 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
     public class LocationProfileViewModel : BindableBase, IDropable
     {
         private ILEDBoxService _LEDBoxService;
-        private IEventAggregator _eventAggregator;
+        private readonly IRegionManager _regionManager;
 
 
-
-        public LocationProfileViewModel()
+         [ImportingConstructor]
+        public LocationProfileViewModel(ILEDBoxService boxService, IRegionManager regionManager)
         {
-            _LEDBoxService = ServiceLocator.Current.GetInstance<ILEDBoxService>();
+            _LEDBoxService = boxService;
+            _regionManager = regionManager;
             BoxGroups = new ObservableCollection<BoxGroupViewModel>();
             BoxGroupsToolItem = new ObservableCollection<BoxGroupToolItemViewModel>();
             PopulateBoxGroups();
             SaveConfigurationCommand = new DelegateCommand(SaveConfiguration);
             LoadConfigurationCommand = new DelegateCommand(LoadConfiguration);
             SetBrightnessCommand = new DelegateCommand<object>(SetBrightness);
+            ZoomCommand = new DelegateCommand<MouseWheelEventArgs>(ZoomCanvas);
         }
+
+         private void ZoomCanvas(MouseWheelEventArgs obj)
+         {
+             
+         }
 
 
         private ObservableCollection<BoxGroupViewModel> _boxGroups;
@@ -69,10 +79,13 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
 
         public DelegateCommand<object> SetBrightnessCommand { get; set; }
 
-        private void PopulateBoxGroups()
+        public DelegateCommand<MouseWheelEventArgs> ZoomCommand { get; set; }
+
+        private async void PopulateBoxGroups()
         {
             BoxGroupToolItemViewModel boxGroup;
-            foreach (LEDBoxGroup groupItem in this._LEDBoxService.GetBoxGroups())
+            var boxGroups = await _LEDBoxService.GetBoxGroupsAsync();
+            foreach (LEDBoxGroup groupItem in boxGroups)
             {
                 boxGroup = new BoxGroupToolItemViewModel(groupItem);
                 this.BoxGroupsToolItem.Add(boxGroup);
@@ -151,6 +164,7 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             {
                 string filename = dialog.FileName;
                 BoxGroups = LoadComponentXml(filename);
+                _regionManager.Regions[RegionNames.MainRegion].RequestNavigate("/BrightnessAdjustmentView", nr => { });
             }
         }
 
@@ -296,20 +310,32 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
 
         private async void SetBrightness(object value)
         {
-
-            byte brightnessValue = Convert.ToByte(value);// byte.Parse(value.ToString());
+            double[] values = value as double[];
+            byte brightnessValue = Convert.ToByte(values[0]);
+            byte redValue = Convert.ToByte(values[1]);
+            byte greenValue = Convert.ToByte(values[2]);
+            byte blueValue = Convert.ToByte(values[3]);
             foreach (var groupViewModel in BoxGroups)
             {
                 foreach (var boxViewModel in groupViewModel.LEDBoxes)
                 {
                     if (boxViewModel.IsSelected)
                     {
-                        bool result = await boxViewModel.SetBrightness((byte)(255.0/100.0*brightnessValue));
-                        System.Diagnostics.Debug.WriteLine(result);
+                       await boxViewModel.SetBrightness((byte)(255.0/100.0*brightnessValue));
+                       await boxViewModel.SetRGBRed(redValue);
+                       await boxViewModel.SetRGBGreen(greenValue);
+                       await boxViewModel.SetRGBBlue(blueValue);
+
+                       boxViewModel.ReadDataAsync();
                     }
                 }
             }
+
+
         }
+
+
+    
 
 
         #region IDragable

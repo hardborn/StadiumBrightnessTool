@@ -1,6 +1,8 @@
 ﻿using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.ServiceLocation;
+using Nova.LED.Infrastructure.Events;
 using Nova.LED.Infrastructure.Interfaces;
 using Nova.LED.Infrastructure.Models;
 using System;
@@ -18,16 +20,17 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
         private LEDBox _LEDBox;
         private Timer _readDataTimer;
         private IBrightnessService _brightnessService;
-
+        private IEventAggregator _eventAggregator;
         public BoxViewModel(LEDBox box)
         {
             _LEDBox = box;
             SelectBoxCommand = new DelegateCommand<object>(SelectBox);
+            _eventAggregator = ServiceLocator.Current.GetInstance<IEventAggregator>();
             _brightnessService = ServiceLocator.Current.GetInstance<IBrightnessService>();
             _readDataTimer = new Timer(ReadData, null, 0, 1000 * 30);
         }
 
-       
+
 
 
         public const string IndexLocationPropertyName = "IndexLocation";
@@ -138,7 +141,7 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
         }
 
         private int _currentBrightness;
-        public int CurrentBrightness 
+        public int CurrentBrightness
         {
             get { return _currentBrightness; }
             set
@@ -148,21 +151,65 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
         }
 
 
-        private  void SelectBox(object obj)
+        private void SelectBox(object obj)
         {
             IsSelected = !IsSelected;
         }
 
         private async void ReadData(object state)
         {
+            ReadDataAsync();
+        }
+
+
+        public async void ReadDataAsync()
+        {
             CurrentBrightness = await _brightnessService.GetBrightnessAsync(COMIndex, SenderIndex, PortIndex, ConnectIndex);
+            await _brightnessService.GetRGBRedAsync(COMIndex, SenderIndex, PortIndex, ConnectIndex);
+            await _brightnessService.GetRGBGreenAsync(COMIndex, SenderIndex, PortIndex, ConnectIndex);
+            await _brightnessService.GetRGBBlueAsync(COMIndex, SenderIndex, PortIndex, ConnectIndex);
         }
 
         public async Task<bool> SetBrightness(byte value)
         {
-           bool result = await _brightnessService.SetBrightness(COMIndex, SenderIndex, PortIndex, ConnectIndex,value);
-           return result;
+            bool result = await _brightnessService.SetBrightness(COMIndex, SenderIndex, PortIndex, ConnectIndex, value);
+            if (result)
+                _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = string.Format("[{0}] Adjust brightness successful", IndexLocation) });
+            else
+                _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = string.Format("[{0}] Adjust brightness failed", IndexLocation) });
+            return result;
         }
+
+        public async Task<bool> SetRGBRed(byte value)
+        {
+            bool result = await _brightnessService.SetRGBRed(COMIndex, SenderIndex, PortIndex, ConnectIndex, value);
+            if (result)
+                _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = string.Format("[{0}] Adjust RGB(R) successful", IndexLocation) });
+            else
+                _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = string.Format("[{0}] Adjust RGB(R) failed", IndexLocation) });
+            return result;
+        }
+
+        public async Task<bool> SetRGBGreen(byte value)
+        {
+            bool result = await _brightnessService.SetRGBGreen(COMIndex, SenderIndex, PortIndex, ConnectIndex, value);
+            if (result)
+                _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = string.Format("[{0}] Adjust RGB(G) successful", IndexLocation) });
+            else
+                _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = string.Format("[{0}] Adjust RGB(G) failed", IndexLocation) });
+            return result;
+        }
+
+        public async Task<bool> SetRGBBlue(byte value)
+        {
+            bool result = await _brightnessService.SetRGBBlue(COMIndex, SenderIndex, PortIndex, ConnectIndex, value);
+            if (result)
+                _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = string.Format("[{0}] Adjust RGB(B) successful", IndexLocation) });
+            else
+                _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = string.Format("[{0}] Adjust RGB(B) failed", IndexLocation) });
+            return result;
+        }
+
 
 
     }

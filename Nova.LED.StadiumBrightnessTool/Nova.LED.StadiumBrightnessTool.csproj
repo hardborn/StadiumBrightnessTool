@@ -147,7 +147,9 @@
     <Compile Include="Behaviors\IDragable.cs" />
     <Compile Include="Behaviors\IDropable.cs" />
     <Compile Include="Controls\DesignerCanvas\DesignerCanvas.Commands.cs" />
+    <Compile Include="Converters\MultiParameterConverter.cs" />
     <Compile Include="Converters\OpacityConverter.cs" />
+    <Compile Include="ShellViewModel.cs" />
     <Compile Include="ViewModel\BoxGroupToolItemViewModel.cs" />
     <Compile Include="View\Settings.xaml.cs" />
     <Compile Include="View\SettingsAppearance.xaml.cs" />

@@ -15,6 +15,11 @@ namespace Nova.LED.Modules.MockService.Services
 
         private IList<LEDBoxGroup> _groups = new List<LEDBoxGroup>();
 
+        public MockBoxService()
+        {
+
+        }
+
         public LEDBox GetBox(string COMIndex, int senderIndex, int portIndex, int connectIndex)
         {
             return null;
@@ -99,9 +104,131 @@ namespace Nova.LED.Modules.MockService.Services
                 }
             };
             _groups = groups;
+           
             return groups;
         }
 
         public event EventHandler<LEDBoxGroupModelEventArgs> Updated;
+
+
+        public Task<IList<LEDBoxGroup>> GetBoxGroupsAsync()
+        {
+            var tcs = new TaskCompletionSource<IList<LEDBoxGroup>>();
+
+            List<LEDBoxGroup> groups = new List<LEDBoxGroup>()
+            {
+                new LEDBoxGroup()
+                {
+                    COMIndex = "COM3",
+                    SenderIndex = 0,
+                    PortIndex = 0,
+                    Boxes = new List<LEDBox>()
+                    {
+                        new LEDBox()
+                        {
+                            COMIndex = "COM3",
+                            SenderIndex = 0,
+                            PortIndex = 0,
+                            ConnectIndex= 1,
+                            XInPort = 0,
+                            YInPort = 0,
+                            Height=32,
+                            Width =32
+                        },
+                        new LEDBox()
+                        {
+                            COMIndex = "COM3",
+                            SenderIndex = 0,
+                            PortIndex = 0,
+                            ConnectIndex= 2,
+                            XInPort = 32,
+                            YInPort = 32,
+                            Height=32,
+                            Width =32
+                        },
+                           new LEDBox()
+                        {
+                            COMIndex = "COM3",
+                            SenderIndex = 0,
+                            PortIndex = 0,
+                            ConnectIndex= 3,
+                            XInPort = 64,
+                            YInPort = 64,
+                            Height=32,
+                            Width =32
+                        },
+                        new LEDBox()
+                        {
+                            COMIndex = "COM3",
+                            SenderIndex = 0,
+                            PortIndex = 0,
+                            ConnectIndex= 4,
+                            XInPort = 96,
+                            YInPort = 96,
+                            Height=32,
+                            Width =32
+                        },
+                        new LEDBox()
+                        {
+                            COMIndex = "COM3",
+                            SenderIndex = 0,
+                            PortIndex = 0,
+                            ConnectIndex= 5,
+                            XInPort = 128,
+                            YInPort = 128,
+                            Height=32,
+                            Width =32
+                        }
+                    }
+                },
+                 new LEDBoxGroup()
+                {
+                    COMIndex = "COM3",
+                    SenderIndex = 0,
+                    PortIndex = 1,
+                    Boxes = new List<LEDBox>()
+                    {
+                        new LEDBox()
+                        {
+                            COMIndex = "COM3",
+                            SenderIndex = 0,
+                            PortIndex = 1,
+                            ConnectIndex= 3,
+                            XInPort = 0,
+                            YInPort = 0,
+                            Height=48,
+                            Width =48
+                        },
+                        new LEDBox()
+                        {
+                            COMIndex = "COM3",
+                            SenderIndex = 0,
+                            PortIndex = 1,
+                            ConnectIndex= 2,
+                            XInPort = 48,
+                            YInPort = 48,
+                            Height=48,
+                            Width =48
+                        },
+                        new LEDBox()
+                        {
+                            COMIndex = "COM3",
+                            SenderIndex = 0,
+                            PortIndex = 1,
+                            ConnectIndex= 1,
+                            XInPort = 96,
+                            YInPort = 96,
+                            Height=48,
+                            Width =48
+                        }
+                      
+                    }
+                }
+            };
+            _groups = groups;
+
+            tcs.SetResult(_groups);
+            return tcs.Task;
+        }
     }
 }

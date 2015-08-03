@@ -17,17 +17,17 @@ namespace Nova.LED.Modules.Box
     [Export]
     public class BoxModule:IModule
     {
-        private M3LCTServiceProxy _M3Service;
+        //private M3LCTServiceProxy _M3Service;
         private IEventAggregator _eventAggregator;
         private ILEDBoxService _LEDBoxService;
 
-        [ImportingConstructor]
-        public BoxModule(M3LCTServiceProxy serviceProxy,ILEDBoxService boxService, IEventAggregator eventAggregator)
-        {
-            _LEDBoxService = boxService;
-            _eventAggregator = eventAggregator;
-            _M3Service = serviceProxy;
-        }
+        //[ImportingConstructor]
+        //public BoxModule(M3LCTServiceProxy serviceProxy,ILEDBoxService boxService, IEventAggregator eventAggregator)
+        //{
+        //    _LEDBoxService = boxService;
+        //    _eventAggregator = eventAggregator;
+        //    //_M3Service = serviceProxy;
+        //}
 
         public void Initialize()
         {

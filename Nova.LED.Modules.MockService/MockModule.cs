@@ -14,7 +14,7 @@ namespace Nova.LED.Modules.MockService
     {
         public MockModule()
         {
-            Thread.Sleep(5000);
+            //Thread.Sleep(5000);
         }
 
         public void Initialize()

@@ -15,6 +15,7 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <converters:OpacityConverter x:Key="OpacityConverter" />
+        <converters:MultiParameterConverter x:Key="MultiParameterConverter" />
         <Style x:Key="BoxGroupDesignItemStyle" TargetType="{x:Type ItemsControl}">
             <Setter Property="ItemTemplate">
                 <Setter.Value>
@@ -201,10 +202,10 @@
                         VerticalContentAlignment="Center"
                         AutoToolTipPlacement="TopLeft"
                         AutoToolTipPrecision="1"
-                        IsSelectionRangeEnabled="True"
+                        IsSnapToTickEnabled="True"
                         Maximum="100"
                         Minimum="0"
-                        
+                        TickFrequency="1"
                         Value="{Binding CurrentBrightness}" />
 
                 <Label Grid.Row="1"
@@ -212,7 +213,8 @@
                        HorizontalContentAlignment="Right"
                        VerticalContentAlignment="Center"
                        Content="R" />
-                <Slider Grid.Row="1"
+                <Slider Name="redSlider"
+                        Grid.Row="1"
                         Grid.Column="1"
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
@@ -228,7 +230,8 @@
                        HorizontalContentAlignment="Right"
                        VerticalContentAlignment="Center"
                        Content="G" />
-                <Slider Grid.Row="2"
+                <Slider Name="greenSlider"
+                        Grid.Row="2"
                         Grid.Column="1"
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
@@ -244,7 +247,8 @@
                        HorizontalContentAlignment="Right"
                        VerticalContentAlignment="Center"
                        Content="B" />
-                <Slider Grid.Row="3"
+                <Slider Name="blueSlider"
+                        Grid.Row="3"
                         Grid.Column="1"
                         Margin="5,0,0,0"
                         VerticalAlignment="Center"
@@ -262,9 +266,16 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"
                     Command="{Binding SetBrightnessCommand}"
-                    CommandParameter="{Binding Value,
-                                               ElementName=brightnessSlider}"
-                    Content="Adjust" />
+                    Content="Adjust">
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource MultiParameterConverter}">
+                        <Binding ElementName="brightnessSlider" Path="Value" />
+                        <Binding ElementName="redSlider" Path="Value" />
+                        <Binding ElementName="greenSlider" Path="Value" />
+                        <Binding ElementName="blueSlider" Path="Value" />
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
         </Grid>
 
     </Grid>

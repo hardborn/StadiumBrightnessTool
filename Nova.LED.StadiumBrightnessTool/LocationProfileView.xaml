@@ -14,13 +14,31 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:view="clr-namespace:Nova.LED.StadiumBrightnessTool.View"
              d:DesignHeight="300"
-             d:DesignWidth="300"
+             d:DesignWidth="500"
              mc:Ignorable="d">
     <UserControl.Resources>
 
         <converters:OpacityConverter x:Key="OpacityConverter" />
 
         <Style x:Key="BoxGroupDesignItemStyle" TargetType="{x:Type ItemsControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="24" />
+                            </Grid.RowDefinitions>
+                            <local:DragThumb Grid.RowSpan="2" Cursor="SizeAll" />
+                            <ItemsPresenter x:Name="GroupPresenter" Grid.Row="0" />
+                            <TextBlock Grid.Row="1"
+                                       HorizontalAlignment="Center"
+                                       Text="{Binding DataContext.DataContext.IndexLocation,
+                                                      ElementName=GroupPresenter}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
@@ -82,7 +100,7 @@
                     <ControlTemplate TargetType="ItemsControl">
                         <Border Width="{TemplateBinding Width}"
                                 Height="{TemplateBinding Height}"
-                                Background="White"
+                                Background="Gray"
                                 ClipToBounds="True">
                             <ItemsPresenter />
                         </Border>
@@ -96,22 +114,27 @@
                                                ApplyTransform="True"
                                                RealizationLimit="1000"
                                                RealizationPriority="Background"
-                                               RealizationRate="10" />
+                                               RealizationRate="10"
+                                               Loaded="ZoomCanvas_Loaded">
+                            <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseWheel">
+                                    <prism:InvokeCommandAction Command="{Binding ZoomCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+                        </canvas:ZoomableCanvas>
                     </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <local:DesignerItem>
-                            <StackPanel Grid.Row="1" Orientation="Vertical">
-                                <ItemsControl ItemsSource="{Binding DataContext.LEDBoxes,
-                                                                    RelativeSource={RelativeSource TemplatedParent}}"
-                                              SnapsToDevicePixels="True"
-                                              Style="{StaticResource BoxGroupDesignItemStyle}" />
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding IndexLocation}" />
-                            </StackPanel>
-                        </local:DesignerItem>
+
+                        <ItemsControl DataContext="{Binding DataContext,
+                                                            RelativeSource={RelativeSource TemplatedParent}}"
+                                      ItemsSource="{Binding DataContext.LEDBoxes,
+                                                            RelativeSource={RelativeSource TemplatedParent}}"
+                                      SnapsToDevicePixels="True"
+                                      Style="{StaticResource BoxGroupDesignItemStyle}" />
 
                     </DataTemplate>
                 </Setter.Value>
@@ -119,8 +142,8 @@
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
                     <Style>
-                        <Setter Property="Canvas.Left" Value="{Binding ElementPxPointX}" />
-                        <Setter Property="Canvas.Top" Value="{Binding ElementPxPointY}" />
+                        <Setter Property="Canvas.Left" Value="{Binding ElementPxPointX, Mode=TwoWay}" />
+                        <Setter Property="Canvas.Top" Value="{Binding ElementPxPointY, Mode=TwoWay}" />
                     </Style>
                 </Setter.Value>
             </Setter>
@@ -128,13 +151,15 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="4" />
+            <ColumnDefinition Width="Auto"
+                              MinWidth="200"
+                              MaxWidth="300" />
+            <ColumnDefinition Width="2" />
             <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer>
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <TextBlock Margin="0,0,0,8"
                            HorizontalAlignment="Center"
                            FontSize="14"
@@ -155,10 +180,10 @@
                                 <i:Interaction.Behaviors>
                                     <behaviors:FrameworkElementDragBehavior />
                                 </i:Interaction.Behaviors>
-                                <Grid Grid.Column="0">
+                                <Grid Grid.Column="0" Margin="0,0,20,0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
-                                        <RowDefinition Height="20" />
+                                        <RowDefinition Height="30" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
                                     <StackPanel Grid.Row="0" Orientation="Horizontal">
@@ -198,9 +223,10 @@
                 </ListBox>
             </StackPanel>
         </ScrollViewer>
-        <!--<content:LoremIpsum Margin="{StaticResource SplitLeft}" />-->
 
-        <!--<content:LoremIpsum Grid.Column="2" Margin="{StaticResource SplitRight}" />-->
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
+
+
         <Grid Grid.Column="2" AllowDrop="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -210,8 +236,8 @@
                 <ItemsControl HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
                               AllowDrop="True"
-                              Background="WhiteSmoke"
                               ItemsSource="{Binding BoxGroups}"
+                              MouseWheel="ItemsControl_MouseWheel"
                               Style="{StaticResource ConfigurationItemsControlStyle}">
 
 
@@ -222,13 +248,24 @@
 
                 </ItemsControl>
             </ScrollViewer>
-            <Button Grid.Row="1"
-                    Width="60"
-                    Height="24"
-                    Margin="0,0,10,0"
-                    HorizontalAlignment="Right"
-                    Command="{Binding SaveConfigurationCommand}"
-                    Content="Save" />
+            <StackPanel Grid.Row="1"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <Button Width="60"
+                        Height="24"
+                        Margin="0,0,10,0"
+                        HorizontalAlignment="Right"
+                        Command="{Binding SaveConfigurationCommand}"
+                        Content="Save" />
+
+                <Button Width="60"
+                        Height="24"
+                        Margin="0,0,10,0"
+                        HorizontalAlignment="Right"
+                        Command="{Binding LoadConfigurationCommand}"
+                        Content="Open" />
+            </StackPanel>
+
         </Grid>
 
 
