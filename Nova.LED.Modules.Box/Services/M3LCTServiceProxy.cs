@@ -1,4 +1,5 @@
 ﻿using Microsoft.Practices.Prism.PubSubEvents;
+using Microsoft.Practices.ServiceLocation;
 using Nova.LCT.GigabitSystem.CommonInfoAccessor;
 using Nova.LCT.Message.Client;
 using Nova.LED.Infrastructure.Events;
@@ -29,9 +30,9 @@ namespace Nova.LED.Modules.Box.Services
         private IEventAggregator _eventAggregator;
 
         [ImportingConstructor]
-        public M3LCTServiceProxy(Dispatcher uiDispatcher, IEventAggregator eventAggregator)
+        public M3LCTServiceProxy(IEventAggregator eventAggregator)
         {
-            _uiDispatcher = uiDispatcher;
+            _uiDispatcher = ServiceLocator.Current.GetInstance<Dispatcher>();
             _eventAggregator = eventAggregator;
             InitalizeServerProxy();
         }

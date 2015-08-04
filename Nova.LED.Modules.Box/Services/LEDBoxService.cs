@@ -92,11 +92,12 @@ namespace Nova.LED.Modules.Box.Services
                         box.XInPort = receivingCardItem.XInPort;
                         box.YInPort = receivingCardItem.YInPort;
                         box.COMIndex = currentCOMAndHWBaseInfo.Key;
-                        box.SenderIndex = (byte)(receivingCardItem.SenderIndex+1);
-                        box.PortIndex = (byte)(receivingCardItem.PortIndex+1);
-                        box.ConnectIndex = (byte)(receivingCardItem.ConnectIndex+1);
+                        box.SenderIndex = (byte)(receivingCardItem.SenderIndex);
+                        box.PortIndex = (byte)(receivingCardItem.PortIndex);
+                        box.ConnectIndex = (byte)(receivingCardItem.ConnectIndex);
                         _boxes.Add(box);
                     }
+                   
                 }
                 var boxGroupList = _boxes.GroupBy(x => new { x.COMIndex, x.SenderIndex, x.PortIndex })
                                          .Select(y => new LEDBoxGroup()

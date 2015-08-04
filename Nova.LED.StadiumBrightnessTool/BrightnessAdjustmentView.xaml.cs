@@ -24,9 +24,28 @@ namespace Nova.LED.StadiumBrightnessTool
     [Export]
     public partial class BrightnessAdjustmentView : UserControl
     {
+        private ZoomableCanvas _zoomableCanvas;
         public BrightnessAdjustmentView()
         {
             InitializeComponent();
+        }
+
+        private void ZoomCanvas_Loaded(object sender, RoutedEventArgs e)
+        {
+            _zoomableCanvas = sender as ZoomableCanvas;
+        }
+
+        private void ItemsControl_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var x = Math.Pow(2, e.Delta / 3.0 / Mouse.MouseWheelDeltaForOneLine);
+            _zoomableCanvas.Scale *= x;
+
+            e.Handled = true;
+        }
+
+        private void ZoomCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
         }
        
     }

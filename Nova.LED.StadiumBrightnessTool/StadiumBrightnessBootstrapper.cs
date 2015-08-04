@@ -8,8 +8,6 @@ using Nova.LED.Infrastructure.Events;
 using Nova.LED.Infrastructure.Interfaces;
 using Nova.LED.Modules.Box;
 using Nova.LED.Modules.MockService;
-using Nova.LED.Modules.Splash;
-using Nova.LED.Modules.Splash.Events;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
@@ -44,10 +42,12 @@ namespace Nova.LED.StadiumBrightnessTool
         protected override void ConfigureAggregateCatalog()
         {
             this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(StadiumBrightnessBootstrapper).Assembly));
+            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(BoxModule).Assembly));
             this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(RegionNames).Assembly));
-            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(SplashModule).Assembly));
-            //this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(BoxModule).Assembly));
-            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(MockModule).Assembly));
+            //this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(SplashModule).Assembly));
+           
+           
+            //this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(MockModule).Assembly));
         }
 
 

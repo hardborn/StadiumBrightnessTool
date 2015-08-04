@@ -13,12 +13,12 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
         private Point? endPoint;
         private Pen rubberbandPen;
 
-        private DesignerCanvas designerCanvas;
+        private ZoomableCanvas zoomableCanvas;
 
-        public RubberbandAdorner(DesignerCanvas designerCanvas, Point? dragStartPoint)
+        public RubberbandAdorner(ZoomableCanvas designerCanvas, Point? dragStartPoint)
             : base(designerCanvas)
         {
-            this.designerCanvas = designerCanvas;
+            this.zoomableCanvas = designerCanvas;
             this.startPoint = dragStartPoint;
             rubberbandPen = new Pen(Brushes.LightSlateGray, 1);
             rubberbandPen.DashStyle = new DashStyle(new double[] { 2 }, 1);
@@ -49,7 +49,7 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
             if (this.IsMouseCaptured) this.ReleaseMouseCapture();
 
             // remove this adorner from adorner layer
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this.designerCanvas);
+            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this.zoomableCanvas);
             if (adornerLayer != null)
                 adornerLayer.Remove(this);
 
@@ -71,26 +71,80 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
 
         private void UpdateSelection()
         {
-            designerCanvas.SelectionService.ClearSelection();
+            //zoomableCanvas.SelectionService.ClearSelection();
 
             Rect rubberBand = new Rect(startPoint.Value, endPoint.Value);
-            foreach (Control item in designerCanvas.Children)
-            {
-                Rect itemRect = VisualTreeHelper.GetDescendantBounds(item);
-                Rect itemBounds = item.TransformToAncestor(designerCanvas).TransformBounds(itemRect);
 
-                if (rubberBand.Contains(itemBounds))
+            ItemsControl _selector = AdornedElement as ItemsControl;
+            //foreach (var obj in _selector.Items)
+            //{
+
+            //    ContentPresenter item = _selector.ItemContainerGenerator.ContainerFromItem(obj) as ContentPresenter;
+
+            //    var itemcontrol = FindVisualChild<ItemsControl>(item);
+
+            //    if (itemcontrol == null)
+            //    {
+
+            //    }
+            //    else
+            //    {
+
+            //    }
+            //}
+            foreach (ContentPresenter item in zoomableCanvas.Children)
+            {
+
+                ContentPresenter content = _selector.ItemContainerGenerator.ContainerFromItem(item) as ContentPresenter;
+
+                var itemcontrol = FindVisualChild<ItemsControl>(content);
+
+                if (itemcontrol == null)
                 {
-                    if (item is Connection)
-                        designerCanvas.SelectionService.AddToSelection(item as ISelectable);
-                    else
-                    {
-                        DesignerItem di = item as DesignerItem;
-                        if (di.ParentID == Guid.Empty)
-                            designerCanvas.SelectionService.AddToSelection(di);
-                    }
+
+                }
+                else
+                {
+
+                }
+                //Rect itemRect = VisualTreeHelper.GetDescendantBounds(item);
+                //Rect itemBounds = item.TransformToAncestor(zoomableCanvas).TransformBounds(itemRect);
+
+                //if (rubberBand.Contains(itemBounds))
+                //{
+                //    //if (item is Connection)
+                //    //   // zoomableCanvas.SelectionService.AddToSelection(item as ISelectable);
+                //    //else
+                //    //{
+                //    //    DesignerItem di = item as DesignerItem;
+                //    //    if (di.ParentID == Guid.Empty)
+                //    //       // zoomableCanvas.SelectionService.AddToSelection(di);
+                //    //}
+                //}
+            }
+        }
+
+        public static childItem FindVisualChild<childItem>(DependencyObject obj)
+  where childItem : DependencyObject
+        {
+            // Search immediate children first (breadth-first)
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+
+                if (child != null && child is childItem)
+                    return (childItem)child;
+
+                else
+                {
+                    childItem childOfChild = FindVisualChild<childItem>(child);
+
+                    if (childOfChild != null)
+                        return childOfChild;
                 }
             }
+
+            return null;
         }
     }
 }

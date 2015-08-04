@@ -17,6 +17,23 @@
         <converters:OpacityConverter x:Key="OpacityConverter" />
         <converters:MultiParameterConverter x:Key="MultiParameterConverter" />
         <Style x:Key="BoxGroupDesignItemStyle" TargetType="{x:Type ItemsControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="24" />
+                            </Grid.RowDefinitions>
+                            <ItemsPresenter x:Name="GroupPresenter" Grid.Row="0" />
+                            <TextBlock Grid.Row="1"
+                                       HorizontalAlignment="Center"
+                                       Text="{Binding DataContext.DataContext.IndexLocation,
+                                                      ElementName=GroupPresenter}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
@@ -105,7 +122,12 @@
                                 Height="{TemplateBinding Height}"
                                 Background="White"
                                 ClipToBounds="True">
-                            <ItemsPresenter />
+                            <ScrollViewer CanContentScroll="True"
+                                          HorizontalScrollBarVisibility="Auto"
+                                          Padding="{TemplateBinding Control.Padding}"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            </ScrollViewer>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -115,6 +137,8 @@
                     <ItemsPanelTemplate>
                         <canvas:ZoomableCanvas x:Name="ZoomCanvas"
                                                ApplyTransform="True"
+                                               Loaded="ZoomCanvas_Loaded"
+                                               MouseDown="ZoomCanvas_MouseDown"
                                                RealizationLimit="1000"
                                                RealizationPriority="Background"
                                                RealizationRate="10" />
@@ -124,15 +148,12 @@
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <local:DesignerItem>
-                            <StackPanel Grid.Row="1" Orientation="Vertical">
-                                <ItemsControl ItemsSource="{Binding DataContext.LEDBoxes,
-                                                                    RelativeSource={RelativeSource TemplatedParent}}"
-                                              SnapsToDevicePixels="True"
-                                              Style="{StaticResource BoxGroupDesignItemStyle}" />
-                                <TextBlock HorizontalAlignment="Center" Text="{Binding IndexLocation}" />
-                            </StackPanel>
-                        </local:DesignerItem>
+                        <ItemsControl DataContext="{Binding DataContext,
+                                                            RelativeSource={RelativeSource TemplatedParent}}"
+                                      ItemsSource="{Binding DataContext.LEDBoxes,
+                                                            RelativeSource={RelativeSource TemplatedParent}}"
+                                      SnapsToDevicePixels="True"
+                                      Style="{StaticResource BoxGroupDesignItemStyle}" />
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -149,14 +170,17 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="2" />
+            <RowDefinition Height="Auto"
+                           MinHeight="125"
+                           MaxHeight="150" />
         </Grid.RowDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <ItemsControl HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
                           AllowDrop="True"
-                          Background="WhiteSmoke"
                           ItemsSource="{Binding BoxGroups}"
+                          PreviewMouseWheel="ItemsControl_MouseWheel"
                           Style="{StaticResource ConfigurationItemsControlStyle}">
 
 
@@ -164,10 +188,18 @@
                     <behaviors:FrameworkElementDragBehavior />
                     <behaviors:FrameworkElementDropBehavior />
                 </i:Interaction.Behaviors>
+                <ItemsControl.InputBindings>
+                    <KeyBinding Command="{Binding SelectAllCommand}" Gesture="Ctrl+A" />
+                </ItemsControl.InputBindings>
             </ItemsControl>
         </ScrollViewer>
 
-        <Grid Grid.Row="1">
+        <GridSplitter Grid.Row="1"
+                      Height="2"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center" />
+
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="160" />
                 <ColumnDefinition Width="*" />
@@ -201,12 +233,14 @@
                         VerticalAlignment="Center"
                         VerticalContentAlignment="Center"
                         AutoToolTipPlacement="TopLeft"
-                        AutoToolTipPrecision="1"
+                        AutoToolTipPrecision="0"
                         IsSnapToTickEnabled="True"
                         Maximum="100"
                         Minimum="0"
                         TickFrequency="1"
-                        Value="{Binding CurrentBrightness}" />
+                        Value="{Binding AdjustmentBrightness,
+                                        Mode=TwoWay,
+                                        Delay=500}" />
 
                 <Label Grid.Row="1"
                        Grid.Column="0"
@@ -220,10 +254,12 @@
                         VerticalAlignment="Center"
                         VerticalContentAlignment="Center"
                         AutoToolTipPlacement="TopLeft"
-                        AutoToolTipPrecision="1"
+                        AutoToolTipPrecision="0"
                         Maximum="255"
                         Minimum="0"
-                        Value="3" />
+                        Value="{Binding AdjustmentRGBRed,
+                                        Mode=TwoWay,
+                                        Delay=500}" />
 
                 <Label Grid.Row="2"
                        Grid.Column="0"
@@ -237,10 +273,12 @@
                         VerticalAlignment="Center"
                         VerticalContentAlignment="Center"
                         AutoToolTipPlacement="TopLeft"
-                        AutoToolTipPrecision="1"
+                        AutoToolTipPrecision="0"
                         Maximum="255"
                         Minimum="0"
-                        Value="3" />
+                        Value="{Binding AdjustmentRGBGreen,
+                                        Mode=TwoWay,
+                                        Delay=500}" />
 
                 <Label Grid.Row="3"
                        Grid.Column="0"
@@ -257,7 +295,9 @@
                         AutoToolTipPrecision="1"
                         Maximum="255"
                         Minimum="0"
-                        Value="3" />
+                        Value="{Binding AdjustmentRGBBlue,
+                                        Mode=TwoWay,
+                                        Delay=500}" />
             </Grid>
             <Button Grid.Column="2"
                     Width="48"
@@ -266,7 +306,8 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"
                     Command="{Binding SetBrightnessCommand}"
-                    Content="Adjust">
+                    Content="Adjust"
+                    Visibility="Collapsed">
                 <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MultiParameterConverter}">
                         <Binding ElementName="brightnessSlider" Path="Value" />

@@ -13,6 +13,13 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <AssemblyInfoFilePath>Properties\AssemblyInfo.cs</AssemblyInfoFilePath>
+    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>None.None.DateStamp.TimeStamp</AssemblyVersionSettings>
+    <AssemblyFileVersionSettings>None.None.DateStamp.TimeStamp</AssemblyFileVersionSettings>
+    <AssemblyInfoVersionSettings>None.None.DateStamp.TimeStamp</AssemblyInfoVersionSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -149,6 +156,7 @@
     <Compile Include="Controls\DesignerCanvas\DesignerCanvas.Commands.cs" />
     <Compile Include="Converters\MultiParameterConverter.cs" />
     <Compile Include="Converters\OpacityConverter.cs" />
+    <Compile Include="Converters\PortToColorConverter.cs" />
     <Compile Include="ShellViewModel.cs" />
     <Compile Include="ViewModel\BoxGroupToolItemViewModel.cs" />
     <Compile Include="View\Settings.xaml.cs" />
@@ -271,10 +279,6 @@
     <ProjectReference Include="..\Nova.LED.Modules.MockService\Nova.LED.Modules.MockService.csproj">
       <Project>{506faf91-0d2a-4c84-8005-5050397026cf}</Project>
       <Name>Nova.LED.Modules.MockService</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Nova.LED.Modules.Splash\Nova.LED.Modules.Splash.csproj">
-      <Project>{ed29eed6-a7f0-4553-9d4a-61f420676bce}</Project>
-      <Name>Nova.LED.Modules.Splash</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

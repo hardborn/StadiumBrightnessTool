@@ -20,7 +20,7 @@ using System.Xml.Linq;
 
 namespace Nova.LED.StadiumBrightnessTool.ViewModel
 {
-    [Export]
+    [Export(typeof(LocationProfileViewModel))]
     [PartCreationPolicy(CreationPolicy.Shared)]
     public class LocationProfileViewModel : BindableBase, IDropable
     {
@@ -28,7 +28,7 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
         private readonly IRegionManager _regionManager;
 
 
-         [ImportingConstructor]
+        [ImportingConstructor]
         public LocationProfileViewModel(ILEDBoxService boxService, IRegionManager regionManager)
         {
             _LEDBoxService = boxService;
@@ -40,12 +40,24 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             LoadConfigurationCommand = new DelegateCommand(LoadConfiguration);
             SetBrightnessCommand = new DelegateCommand<object>(SetBrightness);
             ZoomCommand = new DelegateCommand<MouseWheelEventArgs>(ZoomCanvas);
+            SelectAllCommand = new DelegateCommand(SelectAll);
         }
 
-         private void ZoomCanvas(MouseWheelEventArgs obj)
-         {
-             
-         }
+        private void SelectAll()
+        {
+            foreach (var group in BoxGroups)
+            {
+                foreach (var box in group.LEDBoxes)
+                {
+                    box.IsSelected = true;
+                }
+            }
+        }
+
+        private void ZoomCanvas(MouseWheelEventArgs obj)
+        {
+
+        }
 
 
         private ObservableCollection<BoxGroupViewModel> _boxGroups;
@@ -73,6 +85,49 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             }
         }
 
+        private byte _adjustmentBrightness;
+        public byte AdjustmentBrightness
+        {
+            get { return _adjustmentBrightness; }
+            set
+            {
+                if (SetProperty(ref _adjustmentBrightness, value))
+                {
+                    SetBrightness(value);
+                }
+            }
+        }
+
+        private byte _adjustmentRGBRed;
+        public byte AdjustmentRGBRed
+        {
+            get { return _adjustmentRGBRed; }
+            set
+            {
+                SetProperty(ref _adjustmentRGBRed, value);
+            }
+        }
+
+        private byte _adjustmentRGBGreen;
+        public byte AdjustmentRGBGreen
+        {
+            get { return _adjustmentRGBGreen; }
+            set
+            {
+                SetProperty(ref _adjustmentRGBGreen, value);
+            }
+        }
+
+        private byte _adjustmentRGBBlue;
+        public byte AdjustmentRGBBlue
+        {
+            get { return _adjustmentRGBBlue; }
+            set
+            {
+                SetProperty(ref _adjustmentRGBBlue, value);
+            }
+        }
+
         public DelegateCommand SaveConfigurationCommand { get; set; }
 
         public DelegateCommand LoadConfigurationCommand { get; set; }
@@ -80,6 +135,8 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
         public DelegateCommand<object> SetBrightnessCommand { get; set; }
 
         public DelegateCommand<MouseWheelEventArgs> ZoomCommand { get; set; }
+
+        public DelegateCommand SelectAllCommand { get; set; }
 
         private async void PopulateBoxGroups()
         {
@@ -118,8 +175,8 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
                     XElement boxGroupElement = new XElement("BoxGroup");
                     XElement boxGroupInfoElement = new XElement("BoxGroupInfo",
                         new XAttribute("COMIndex", group.COMIndex),
-                        new XAttribute("SenderIndex", group.SenderIndex),
-                        new XAttribute("PortIndex", group.PortIndex),
+                        new XAttribute("SenderIndex", group.BoxGroup.SenderIndex),
+                        new XAttribute("PortIndex", group.BoxGroup.PortIndex),
                         new XAttribute("IndexLocation", group.IndexLocation),
                         new XAttribute("ElementPxPointX", group.ElementPxPointX),
                         new XAttribute("ElementPxPointY", group.ElementPxPointY));
@@ -132,9 +189,9 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
                         {
                             boxesElement.Add(new XElement("Box",
                                 new XAttribute("COMIndex", box.COMIndex),
-                                new XAttribute("SenderIndex", box.SenderIndex),
-                                new XAttribute("PortIndex", box.PortIndex),
-                                new XAttribute("ConnectIndex", box.ConnectIndex),
+                                new XAttribute("SenderIndex", box.Box.SenderIndex),
+                                new XAttribute("PortIndex", box.Box.PortIndex),
+                                new XAttribute("ConnectIndex", box.Box.ConnectIndex),
                                 new XAttribute("Width", box.Width),
                                 new XAttribute("Height", box.Height),
                                 new XAttribute("XInPort", box.XInPort),
@@ -321,21 +378,33 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
                 {
                     if (boxViewModel.IsSelected)
                     {
-                       await boxViewModel.SetBrightness((byte)(255.0/100.0*brightnessValue));
-                       await boxViewModel.SetRGBRed(redValue);
-                       await boxViewModel.SetRGBGreen(greenValue);
-                       await boxViewModel.SetRGBBlue(blueValue);
+                        await boxViewModel.SetBrightness((byte)(255.0 / 100.0 * brightnessValue));
+                        await boxViewModel.SetRGBRed(redValue);
+                        await boxViewModel.SetRGBGreen(greenValue);
+                        await boxViewModel.SetRGBBlue(blueValue);
 
-                       boxViewModel.ReadDataAsync();
+                        boxViewModel.ReadDataAsync();
                     }
                 }
             }
+        }
 
-
+        private async void SetBrightness(byte value)
+        {
+            foreach (var groupViewModel in BoxGroups)
+            {
+                foreach (var boxViewModel in groupViewModel.LEDBoxes)
+                {
+                    if (boxViewModel.IsSelected)
+                    {
+                        await boxViewModel.SetBrightness((byte)Math.Ceiling(255.0 / 100.0 * value));
+                        boxViewModel.RefreshBrightness();
+                    }
+                }
+            }
         }
 
 
-    
 
 
         #region IDragable

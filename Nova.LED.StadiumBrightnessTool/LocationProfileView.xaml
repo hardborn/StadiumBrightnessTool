@@ -19,6 +19,7 @@
     <UserControl.Resources>
 
         <converters:OpacityConverter x:Key="OpacityConverter" />
+        <converters:PortToColorConverter x:Key="PortToColorConverter" />
 
         <Style x:Key="BoxGroupDesignItemStyle" TargetType="{x:Type ItemsControl}">
             <Setter Property="Template">
@@ -30,7 +31,12 @@
                                 <RowDefinition Height="24" />
                             </Grid.RowDefinitions>
                             <local:DragThumb Grid.RowSpan="2" Cursor="SizeAll" />
-                            <ItemsPresenter x:Name="GroupPresenter" Grid.Row="0" />
+                            <!--<ScrollViewer Grid.Row="0"
+                                          Focusable="False"
+                                          Padding="{TemplateBinding Control.Padding}">-->
+                            <ItemsPresenter x:Name="GroupPresenter" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            <!--</ScrollViewer>-->
+
                             <TextBlock Grid.Row="1"
                                        HorizontalAlignment="Center"
                                        Text="{Binding DataContext.DataContext.IndexLocation,
@@ -63,13 +69,15 @@
                                            Grid.ColumnSpan="2"
                                            Width="32"
                                            Height="32"
-                                           Fill="#FF1BA1E2"
+                                           Fill="{Binding PortIndex,
+                                                          Converter={StaticResource PortToColorConverter}}"
                                            IsHitTestVisible="True"
                                            Opacity="{Binding CurrentBrightness,
                                                              Converter={StaticResource OpacityConverter}}"
                                            SnapsToDevicePixels="true"
                                            StrokeDashArray="2"
                                            StrokeThickness="1" />
+                                <!--  #FF1BA1E2  -->
                                 <TextBlock Grid.RowSpan="2"
                                            Grid.ColumnSpan="2"
                                            HorizontalAlignment="Center"
@@ -89,7 +97,7 @@
             <Setter Property="ItemsPanel">
                 <Setter.Value>
                     <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
+                        <WrapPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>
@@ -100,9 +108,13 @@
                     <ControlTemplate TargetType="ItemsControl">
                         <Border Width="{TemplateBinding Width}"
                                 Height="{TemplateBinding Height}"
-                                Background="Gray"
                                 ClipToBounds="True">
-                            <ItemsPresenter />
+                            <ScrollViewer CanContentScroll="True"
+                                          HorizontalScrollBarVisibility="Auto"
+                                          Padding="{TemplateBinding Control.Padding}"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            </ScrollViewer>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -112,10 +124,11 @@
                     <ItemsPanelTemplate>
                         <canvas:ZoomableCanvas x:Name="ZoomCanvas"
                                                ApplyTransform="True"
+                                               Background="White"
+                                               Loaded="ZoomCanvas_Loaded"
                                                RealizationLimit="1000"
                                                RealizationPriority="Background"
-                                               RealizationRate="10"
-                                               Loaded="ZoomCanvas_Loaded">
+                                               RealizationRate="10">
                             <!--<i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseWheel">
                                     <prism:InvokeCommandAction Command="{Binding ZoomCommand}" />
@@ -128,13 +141,13 @@
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
-
                         <ItemsControl DataContext="{Binding DataContext,
                                                             RelativeSource={RelativeSource TemplatedParent}}"
                                       ItemsSource="{Binding DataContext.LEDBoxes,
                                                             RelativeSource={RelativeSource TemplatedParent}}"
                                       SnapsToDevicePixels="True"
                                       Style="{StaticResource BoxGroupDesignItemStyle}" />
+                        <!--  ScrollViewer.IsDeferredScrollingEnabled="True"  -->
 
                     </DataTemplate>
                 </Setter.Value>
@@ -237,7 +250,7 @@
                               VerticalAlignment="Stretch"
                               AllowDrop="True"
                               ItemsSource="{Binding BoxGroups}"
-                              MouseWheel="ItemsControl_MouseWheel"
+                              PreviewMouseWheel="ItemsControl_MouseWheel"
                               Style="{StaticResource ConfigurationItemsControlStyle}">
 
 
