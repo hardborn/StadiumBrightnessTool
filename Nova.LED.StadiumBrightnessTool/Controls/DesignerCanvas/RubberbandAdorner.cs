@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nova.LED.StadiumBrightnessTool.ViewModel;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -12,17 +13,23 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
         private Point? startPoint;
         private Point? endPoint;
         private Pen rubberbandPen;
+        private Brush brush;
 
-        private ZoomableCanvas zoomableCanvas;
+        private ItemsControl itemsControl;
 
-        public RubberbandAdorner(ZoomableCanvas designerCanvas, Point? dragStartPoint)
+        public RubberbandAdorner(ItemsControl designerCanvas, Point? dragStartPoint)
             : base(designerCanvas)
         {
-            this.zoomableCanvas = designerCanvas;
+            this.itemsControl = designerCanvas;
             this.startPoint = dragStartPoint;
             rubberbandPen = new Pen(Brushes.LightSlateGray, 1);
             rubberbandPen.DashStyle = new DashStyle(new double[] { 2 }, 1);
+            brush = new SolidColorBrush(SystemColors.HighlightColor);
+            brush.Opacity = 0.3;
         }
+
+
+   
 
         protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
         {
@@ -48,11 +55,12 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
             // release mouse capture
             if (this.IsMouseCaptured) this.ReleaseMouseCapture();
 
+            DisposeRubberBand();
             // remove this adorner from adorner layer
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this.zoomableCanvas);
+            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(AdornedElement);
             if (adornerLayer != null)
                 adornerLayer.Remove(this);
-
+           
             e.Handled = true;
         }
 
@@ -66,66 +74,59 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
             dc.DrawRectangle(Brushes.Transparent, null, new Rect(RenderSize));
 
             if (this.startPoint.HasValue && this.endPoint.HasValue)
-                dc.DrawRectangle(Brushes.Transparent, rubberbandPen, new Rect(this.startPoint.Value, this.endPoint.Value));
+                dc.DrawRectangle(brush, rubberbandPen, new Rect(this.startPoint.Value, this.endPoint.Value));
         }
 
         private void UpdateSelection()
         {
-            //zoomableCanvas.SelectionService.ClearSelection();
 
             Rect rubberBand = new Rect(startPoint.Value, endPoint.Value);
-
             ItemsControl _selector = AdornedElement as ItemsControl;
-            //foreach (var obj in _selector.Items)
-            //{
-
-            //    ContentPresenter item = _selector.ItemContainerGenerator.ContainerFromItem(obj) as ContentPresenter;
-
-            //    var itemcontrol = FindVisualChild<ItemsControl>(item);
-
-            //    if (itemcontrol == null)
-            //    {
-
-            //    }
-            //    else
-            //    {
-
-            //    }
-            //}
-            foreach (ContentPresenter item in zoomableCanvas.Children)
+            foreach (var obj in _selector.Items)
             {
 
-                ContentPresenter content = _selector.ItemContainerGenerator.ContainerFromItem(item) as ContentPresenter;
-
-                var itemcontrol = FindVisualChild<ItemsControl>(content);
-
-                if (itemcontrol == null)
+                ContentPresenter item = _selector.ItemContainerGenerator.ContainerFromItem(obj) as ContentPresenter;
+                if (item == null)
                 {
-
+                    break;
                 }
-                else
+                var boxesControl = FindVisualChild<ItemsControl>(item);
+
+                if (boxesControl != null)
                 {
-
-                }
-                //Rect itemRect = VisualTreeHelper.GetDescendantBounds(item);
-                //Rect itemBounds = item.TransformToAncestor(zoomableCanvas).TransformBounds(itemRect);
-
-                //if (rubberBand.Contains(itemBounds))
-                //{
-                //    //if (item is Connection)
-                //    //   // zoomableCanvas.SelectionService.AddToSelection(item as ISelectable);
-                //    //else
-                //    //{
-                //    //    DesignerItem di = item as DesignerItem;
-                //    //    if (di.ParentID == Guid.Empty)
-                //    //       // zoomableCanvas.SelectionService.AddToSelection(di);
-                //    //}
-                //}
-            }
+                    foreach (var boxControl in boxesControl.Items)
+                    {
+                        ContentPresenter presenter = boxesControl.ItemContainerGenerator.ContainerFromItem(boxControl) as ContentPresenter;
+                        var viewModel = presenter.DataContext as BoxViewModel;
+                        Point point = presenter.TransformToAncestor(AdornedElement).Transform(new Point(0, 0));
+                        Rect bandrect = new Rect(startPoint.Value, endPoint.Value);
+                        if (bandrect.Height < 0.1 && bandrect.Width <0.1 )
+                        {
+                            break;
+                        }
+                        Rect elementrect = new Rect(point.X, point.Y, presenter.ActualWidth, presenter.ActualHeight);
+                        if (bandrect.IntersectsWith(elementrect))
+                        {
+                           
+                            viewModel.IsSelected = true;
+                        }
+                        else
+                        {
+                            viewModel.IsSelected = false;
+                        }
+                    }                    
+                }              
+            }          
         }
 
-        public static childItem FindVisualChild<childItem>(DependencyObject obj)
-  where childItem : DependencyObject
+        private void DisposeRubberBand()
+        {
+            startPoint = null;
+            endPoint = null;
+            //flag = false;
+        }
+
+        public static childItem FindVisualChild<childItem>(DependencyObject obj) where childItem : DependencyObject
         {
             // Search immediate children first (breadth-first)
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)

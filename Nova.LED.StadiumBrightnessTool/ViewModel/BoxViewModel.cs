@@ -146,7 +146,7 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             }
             set
             {
-                SetProperty(ref _senderIndex,value);
+                SetProperty(ref _senderIndex, value);
             }
         }
 
@@ -174,7 +174,7 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             }
             set
             {
-                SetProperty(ref _y,value);
+                SetProperty(ref _y, value);
             }
         }
 
@@ -218,10 +218,40 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             }
         }
 
+        private int _currentRGBRed;
+        public int CurrentRGBRed
+        {
+            get { return _currentRGBRed; }
+            set
+            {
+                SetProperty(ref _currentRGBRed, value);
+            }
+        }
+
+        private int _currentRGBGreen;
+        public int CurrentRGBGreen
+        {
+            get { return _currentRGBGreen; }
+            set
+            {
+                SetProperty(ref _currentRGBGreen, value);
+            }
+        }
+
+        private int _currentRGBBlue;
+        public int CurrentRGBBlue
+        {
+            get { return _currentRGBBlue; }
+            set
+            {
+                SetProperty(ref _currentRGBBlue, value);
+            }
+        }
+
 
         private string GetIndexLocation(LEDBox box)
         {
-            return string.Format("{0}-S{1}-P{2}-{3}", box.COMIndex, box.SenderIndex + 1, box.PortIndex + 1, box.ConnectIndex+1);
+            return string.Format("{0}-S{1}-P{2}-{3}", box.COMIndex, box.SenderIndex + 1, box.PortIndex + 1, box.ConnectIndex + 1);
         }
 
         private void SelectBox(object obj)
@@ -237,16 +267,31 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
 
         public async void RefreshBrightness()
         {
-           CurrentBrightness = await _brightnessService.GetBrightnessAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
+            CurrentBrightness = await _brightnessService.GetBrightnessAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
+        }
+
+        public async void RefreshRGBRed()
+        {
+            CurrentRGBRed = await _brightnessService.GetRGBRedAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
+        }
+
+        public async void RefreshRGBGreen()
+        {
+            CurrentRGBGreen = await _brightnessService.GetRGBGreenAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
+        }
+
+        public async void RefreshRGBBlue()
+        {
+            CurrentRGBBlue = await _brightnessService.GetRGBBlueAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
         }
 
 
         public async void ReadDataAsync()
         {
             CurrentBrightness = await _brightnessService.GetBrightnessAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
-            await _brightnessService.GetRGBRedAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
-            await _brightnessService.GetRGBGreenAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
-            await _brightnessService.GetRGBBlueAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
+            CurrentRGBRed = await _brightnessService.GetRGBRedAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
+            CurrentRGBGreen = await _brightnessService.GetRGBGreenAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
+            CurrentRGBBlue = await _brightnessService.GetRGBBlueAsync(_box.COMIndex, _box.SenderIndex, _box.PortIndex, _box.ConnectIndex);
         }
 
 

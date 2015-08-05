@@ -1,4 +1,5 @@
-﻿using Nova.LED.StadiumBrightnessTool.ViewModel;
+﻿using Nova.LED.StadiumBrightnessTool.Controls;
+using Nova.LED.StadiumBrightnessTool.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -40,13 +41,114 @@ namespace Nova.LED.StadiumBrightnessTool
             var x = Math.Pow(2, e.Delta / 3.0 / Mouse.MouseWheelDeltaForOneLine);
             _zoomableCanvas.Scale *= x;
 
-            e.Handled = true;
+            e.Handled = false;
         }
 
-        private void ZoomCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+
+        private Point? rubberbandSelectionStartPoint = null;
+
+        private void ItemsControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            base.OnMouseDown(e);
+            if (e.Source == sender)
+            {
+                // in case that this click is the start of a 
+                // drag operation we cache the start point
+                this.rubberbandSelectionStartPoint = new Point?(e.GetPosition(sender as IInputElement));
 
+                // if you click directly on the canvas all 
+                // selected items are 'de-selected'
+                // SelectionService.ClearSelection();
+                Focus();
+                e.Handled = false;
+            }
         }
+
+        private void ItemsControl_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            if (e.OriginalSource is System.Windows.Controls.Primitives.Thumb)
+            {
+                e.Handled = false;
+                return;
+            }
+
+            // if mouse button is not pressed we have no drag operation, ...
+            if (e.LeftButton != MouseButtonState.Pressed)
+                this.rubberbandSelectionStartPoint = null;
+
+            // ... but if mouse button is pressed and start
+            // point value is set we do have one
+            if (this.rubberbandSelectionStartPoint.HasValue)
+            {
+                // create rubberband adorner
+                AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(sender as Visual);
+                if (adornerLayer != null)
+                {
+                    RubberbandAdorner adorner = new RubberbandAdorner(sender as ItemsControl, rubberbandSelectionStartPoint);
+                    if (adorner != null)
+                    {
+                        adornerLayer.Add(adorner);
+                    }
+                }
+            }
+            e.Handled = false;
+        }
+
+
+        #region RubberbandAdorner
+
+        //private Point? rubberbandSelectionStartPoint = null;
+
+
+        //protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        //{
+        //    base.OnMouseDown(e);
+        //    if (e.Source == this)
+        //    {
+        //        // in case that this click is the start of a 
+        //        // drag operation we cache the start point
+        //        this.rubberbandSelectionStartPoint = new Point?(e.GetPosition(this));
+
+        //        // if you click directly on the canvas all 
+        //        // selected items are 'de-selected'
+        //        // SelectionService.ClearSelection();
+        //        Focus();
+        //        e.Handled = true;
+        //    }
+        //}
+
+        //protected override void OnPreviewMouseMove(MouseEventArgs e)
+        //{
+        //    base.OnMouseMove(e);
+
+        //    // if mouse button is not pressed we have no drag operation, ...
+        //    if (e.LeftButton != MouseButtonState.Pressed)
+        //        this.rubberbandSelectionStartPoint = null;
+
+        //    // ... but if mouse button is pressed and start
+        //    // point value is set we do have one
+        //    if (this.rubberbandSelectionStartPoint.HasValue)
+        //    {
+        //        // create rubberband adorner
+        //        AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
+        //        if (adornerLayer != null)
+        //        {
+        //            RubberbandAdorner adorner = new RubberbandAdorner(this, rubberbandSelectionStartPoint);
+        //            if (adorner != null)
+        //            {
+        //                adornerLayer.Add(adorner);
+        //            }
+        //        }
+        //    }
+        //    e.Handled = true;
+        //}
+
+
+
+        #endregion
+
        
     }
 }

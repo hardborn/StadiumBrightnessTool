@@ -61,6 +61,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Stadium.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hardborn.UI.MetroUI">
       <HintPath>..\Lib\Hardborn.UI.MetroUI.dll</HintPath>
@@ -153,6 +156,8 @@
     <Compile Include="Behaviors\FrameworkElementDropBehavior.cs" />
     <Compile Include="Behaviors\IDragable.cs" />
     <Compile Include="Behaviors\IDropable.cs" />
+    <Compile Include="Behaviors\RubberBand.cs" />
+    <Compile Include="Behaviors\RubberBandBehavior.cs" />
     <Compile Include="Controls\DesignerCanvas\DesignerCanvas.Commands.cs" />
     <Compile Include="Converters\MultiParameterConverter.cs" />
     <Compile Include="Converters\OpacityConverter.cs" />
@@ -289,6 +294,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Image\location-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Stadium.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

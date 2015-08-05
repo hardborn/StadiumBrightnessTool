@@ -104,7 +104,10 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             get { return _adjustmentRGBRed; }
             set
             {
-                SetProperty(ref _adjustmentRGBRed, value);
+                if(SetProperty(ref _adjustmentRGBRed, value))
+                {
+                    SetRGBRed(value);
+                }
             }
         }
 
@@ -114,7 +117,10 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             get { return _adjustmentRGBGreen; }
             set
             {
-                SetProperty(ref _adjustmentRGBGreen, value);
+                if(SetProperty(ref _adjustmentRGBGreen, value))
+                {
+                    SetRGBGreen(value);
+                }
             }
         }
 
@@ -124,7 +130,10 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             get { return _adjustmentRGBBlue; }
             set
             {
-                SetProperty(ref _adjustmentRGBBlue, value);
+               if( SetProperty(ref _adjustmentRGBBlue, value))
+               {
+                   SetRGBBlue(value);
+               }
             }
         }
 
@@ -404,7 +413,50 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             }
         }
 
+        private async void SetRGBRed(byte value)
+        {
+            foreach (var groupViewModel in BoxGroups)
+            {
+                foreach (var boxViewModel in groupViewModel.LEDBoxes)
+                {
+                    if (boxViewModel.IsSelected)
+                    {
+                        await boxViewModel.SetRGBRed(value);
+                        boxViewModel.RefreshRGBRed();
+                    }
+                }
+            }
+        }
 
+        private async void SetRGBGreen(byte value)
+        {
+            foreach (var groupViewModel in BoxGroups)
+            {
+                foreach (var boxViewModel in groupViewModel.LEDBoxes)
+                {
+                    if (boxViewModel.IsSelected)
+                    {
+                        await boxViewModel.SetRGBGreen(value);
+                        boxViewModel.RefreshRGBGreen();
+                    }
+                }
+            }
+        }
+
+        private async void SetRGBBlue(byte value)
+        {
+            foreach (var groupViewModel in BoxGroups)
+            {
+                foreach (var boxViewModel in groupViewModel.LEDBoxes)
+                {
+                    if (boxViewModel.IsSelected)
+                    {
+                        await boxViewModel.SetRGBBlue(value);
+                        boxViewModel.RefreshRGBBlue();
+                    }
+                }
+            }
+        }
 
 
         #region IDragable
