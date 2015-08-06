@@ -39,8 +39,32 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
             SaveConfigurationCommand = new DelegateCommand(SaveConfiguration);
             LoadConfigurationCommand = new DelegateCommand(LoadConfiguration);
             SetBrightnessCommand = new DelegateCommand<object>(SetBrightness);
-            ZoomCommand = new DelegateCommand<MouseWheelEventArgs>(ZoomCanvas);
             SelectAllCommand = new DelegateCommand(SelectAll);
+            SyncBoxInfoCommand = new DelegateCommand(SyncBoxInfo);
+            _LEDBoxService.BoxUpdated += _LEDBoxService_BoxUpdated;
+            IsSyncing = false;
+        }
+
+
+        private async void SyncBoxInfo()
+        {
+            IsSyncing = true;
+            await PopulateBoxGroups();
+            IsSyncing = false;
+        }
+
+        private bool _isSyncing= false;
+        public bool IsSyncing { 
+            get { return _isSyncing; }
+            set 
+            {
+                SetProperty(ref _isSyncing, value);
+            }
+        }
+
+        private void _LEDBoxService_BoxUpdated(object sender, EventArgs e)
+        {
+            PopulateBoxGroups();
         }
 
         private void SelectAll()
@@ -52,11 +76,6 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
                     box.IsSelected = true;
                 }
             }
-        }
-
-        private void ZoomCanvas(MouseWheelEventArgs obj)
-        {
-
         }
 
 
@@ -147,9 +166,12 @@ namespace Nova.LED.StadiumBrightnessTool.ViewModel
 
         public DelegateCommand SelectAllCommand { get; set; }
 
-        private async void PopulateBoxGroups()
+        public DelegateCommand SyncBoxInfoCommand { get; set; }
+
+        private async Task PopulateBoxGroups()
         {
             BoxGroupToolItemViewModel boxGroup;
+            this.BoxGroupsToolItem.Clear();
             var boxGroups = await _LEDBoxService.GetBoxGroupsAsync();
             foreach (LEDBoxGroup groupItem in boxGroups)
             {

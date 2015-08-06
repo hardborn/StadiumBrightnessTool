@@ -159,6 +159,7 @@
     <Compile Include="Behaviors\RubberBand.cs" />
     <Compile Include="Behaviors\RubberBandBehavior.cs" />
     <Compile Include="Controls\DesignerCanvas\DesignerCanvas.Commands.cs" />
+    <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\MultiParameterConverter.cs" />
     <Compile Include="Converters\OpacityConverter.cs" />
     <Compile Include="Converters\PortToColorConverter.cs" />

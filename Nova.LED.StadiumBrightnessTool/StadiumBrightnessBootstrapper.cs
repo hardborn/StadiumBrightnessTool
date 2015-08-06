@@ -42,12 +42,12 @@ namespace Nova.LED.StadiumBrightnessTool
         protected override void ConfigureAggregateCatalog()
         {
             this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(StadiumBrightnessBootstrapper).Assembly));
-            //this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(BoxModule).Assembly));
+            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(BoxModule).Assembly));
             this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(RegionNames).Assembly));
             //this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(SplashModule).Assembly));
            
            
-            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(MockModule).Assembly));
+            //this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(MockModule).Assembly));
         }
 
 

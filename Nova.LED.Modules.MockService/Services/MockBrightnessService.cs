@@ -14,29 +14,37 @@ namespace Nova.LED.Modules.MockService.Services
     {
         public Task<int> GetBrightnessAsync(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex)
         {
-            var tcs = new TaskCompletionSource<int>();            
-            tcs.SetResult(77);
+            var tcs = new TaskCompletionSource<int>();
+            Random random = new Random();
+            byte value = (byte)random.Next(0, 255);
+            tcs.SetResult(value);
             return tcs.Task;
         }
 
         public Task<byte> GetRGBRedAsync(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex)
         {
             var tcs = new TaskCompletionSource<byte>();
-            tcs.SetResult(77);
+            Random random = new Random();
+            byte value = (byte)random.Next(0, 255);
+            tcs.SetResult(value);
             return tcs.Task;
         }
 
         public Task<byte> GetRGBGreenAsync(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex)
         {
             var tcs = new TaskCompletionSource<byte>();
-            tcs.SetResult(77);
+            Random random = new Random();
+            byte value = (byte)random.Next(0, 255);
+            tcs.SetResult(value);
             return tcs.Task;
         }
 
         public Task<byte> GetRGBBlueAsync(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex)
         {
             var tcs = new TaskCompletionSource<byte>();
-            tcs.SetResult(77);
+            Random random = new Random();
+            byte value = (byte)random.Next(0, 255);
+            tcs.SetResult(value);
             return tcs.Task;
         }
 
@@ -56,7 +64,7 @@ namespace Nova.LED.Modules.MockService.Services
 
         public Task<bool> SetRGBGreen(string COMIndex, byte senderIndex, byte portIndex, ushort connectIndex, byte value)
         {
-            var tcs = new TaskCompletionSource<bool>();
+            var tcs = new TaskCompletionSource<bool>();           
             tcs.SetResult(true);
             return tcs.Task;
         }

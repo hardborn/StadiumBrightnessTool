@@ -12,7 +12,7 @@ namespace Nova.LED.Infrastructure.Interfaces
         LEDBox GetBox(string COMIndex, int senderIndex, int portIndex, int connectIndex);
         Task<IList<LEDBoxGroup>> GetBoxGroupsAsync();
 
-        event EventHandler<LEDBoxGroupModelEventArgs> Updated;
+        event EventHandler BoxUpdated;
 
 
     }

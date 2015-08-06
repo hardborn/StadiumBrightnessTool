@@ -11,6 +11,13 @@
     <AssemblyName>Nova.LED.Infrastructure</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AssemblyInfoFilePath>Properties\AssemblyInfo.cs</AssemblyInfoFilePath>
+    <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>True</UpdateAssemblyInfoVersion>
+    <AssemblyVersionSettings>None.None.DateStamp.Increment</AssemblyVersionSettings>
+    <AssemblyFileVersionSettings>None.None.DateStamp.Increment</AssemblyFileVersionSettings>
+    <AssemblyInfoVersionSettings>None.None.DateStamp.Increment</AssemblyInfoVersionSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,6 +76,7 @@
     <Compile Include="Behaviors\AutoPopulateExportedViewsBehavior.cs" />
     <Compile Include="Behaviors\IViewRegionRegistration.cs" />
     <Compile Include="Behaviors\ViewExportAttribute.cs" />
+    <Compile Include="Events\BoxInfoUpdateEvent.cs" />
     <Compile Include="Events\MessageUpdateEvent.cs" />
     <Compile Include="Interfaces\IBrightnessService.cs" />
     <Compile Include="Interfaces\ILEDBoxService.cs" />

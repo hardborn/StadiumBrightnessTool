@@ -34,7 +34,17 @@ namespace Nova.LED.Modules.Box.Services
         {
             _LCTService = serviceProxy;
             _eventAggregator = eventAggregator;
+            _eventAggregator.GetEvent<BoxInfoUpdateEvent>().Subscribe(UpdateBoxInfo);
+
             //InitializeLEDBox();
+        }
+
+        private void UpdateBoxInfo(string obj)
+        {
+          if (BoxUpdated != null)
+          {
+              BoxUpdated(this, null);
+          }
         }
 
         public void InitializeLEDBox()
@@ -64,6 +74,8 @@ namespace Nova.LED.Modules.Box.Services
         public Task<IList<LEDBoxGroup>> GetBoxGroupsAsync()
         {
             var tcs = new TaskCompletionSource<IList<LEDBoxGroup>>();
+            _boxes.Clear();
+            _groups.Clear();
             _LCTService.ReadCOMHWBaseInfoAsync((info, o) =>
             {
                 if (info == null || info.AllInfo == null || info.AllInfo.AllInfoDict == null)
@@ -116,7 +128,7 @@ namespace Nova.LED.Modules.Box.Services
         }
 
 
-        public event EventHandler<LEDBoxGroupModelEventArgs> Updated;
+        public event EventHandler BoxUpdated;
 
 
     }

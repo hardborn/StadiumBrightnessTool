@@ -105,15 +105,25 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
                             break;
                         }
                         Rect elementrect = new Rect(point.X, point.Y, presenter.ActualWidth, presenter.ActualHeight);
-                        if (bandrect.IntersectsWith(elementrect))
+
+                        if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                         {
-                           
-                            viewModel.IsSelected = true;
+                            if (bandrect.IntersectsWith(elementrect))
+                            {
+                                viewModel.IsSelected = true;
+                            }
                         }
                         else
                         {
-                            viewModel.IsSelected = false;
-                        }
+                            if (bandrect.IntersectsWith(elementrect))
+                            {
+                                viewModel.IsSelected = true;
+                            }
+                            else
+                            {
+                                viewModel.IsSelected = false;
+                            }
+                        }                       
                     }                    
                 }              
             }          

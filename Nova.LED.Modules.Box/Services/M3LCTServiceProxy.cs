@@ -133,6 +133,7 @@ namespace Nova.LED.Modules.Box.Services
         private void OnEquipmentChangeEvent(object sender, EventArgs e)
         {
             //throw new NotImplementedException();
+            _eventAggregator.GetEvent<BoxInfoUpdateEvent>().Publish("Changed");
         }
 
         private void OnCompleteConnectEquipment(object O0lO0l, ConnectEquipmentEventArgs O)

@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Hardborn.UI.MetroUI;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Hardborn.UI.MetroUI;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Hardborn.UI.MetroUI;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Hardborn.UI.MetroUI;component/Styles/FlatButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
         </ResourceDictionary>

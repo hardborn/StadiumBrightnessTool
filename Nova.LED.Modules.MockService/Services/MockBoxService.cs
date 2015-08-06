@@ -108,7 +108,7 @@ namespace Nova.LED.Modules.MockService.Services
             return groups;
         }
 
-        public event EventHandler<LEDBoxGroupModelEventArgs> Updated;
+        public event EventHandler BoxUpdated;
 
 
         public Task<IList<LEDBoxGroup>> GetBoxGroupsAsync()
