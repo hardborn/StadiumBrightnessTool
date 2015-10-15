@@ -1,5 +1,8 @@
-﻿using Nova.LCT.GigabitSystem.CommonInfoAccessor;
+﻿using Microsoft.Practices.Prism.PubSubEvents;
+using Microsoft.Practices.ServiceLocation;
+using Nova.LCT.GigabitSystem.CommonInfoAccessor;
 using Nova.LCT.Message.Client;
+using Nova.LED.Infrastructure.Events;
 using Nova.Message.Common;
 using System;
 using System.Collections.Generic;
@@ -24,19 +27,21 @@ namespace Nova.LED.Modules.Box.Services
         private readonly string SERVER_PATH = AppDomain.CurrentDomain.BaseDirectory + "..\\MarsServerProvider\\MarsServerProvider.exe";
         private AllCOMHWBaseInfoAccessor _accessor;
         private Dispatcher _uiDispatcher;
+        private IEventAggregator _eventAggregator;
 
         [ImportingConstructor]
-        public M3LCTServiceProxy(Dispatcher uiDispatcher)
+        public M3LCTServiceProxy(IEventAggregator eventAggregator)
         {
-            _uiDispatcher = uiDispatcher;
+            _uiDispatcher = ServiceLocator.Current.GetInstance<Dispatcher>();
+            _eventAggregator = eventAggregator;
             InitalizeServerProxy();
         }
 
         public void InitalizeServerProxy()
         {
-
+            _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = "Starting M3Service" });
             StartServer();
-
+            Thread.Sleep(2000);
             _uiDispatcher.Invoke(new Action(() =>
             {
                 try
@@ -45,6 +50,7 @@ namespace Nova.LED.Modules.Box.Services
                     {
                         DisposeServerProxy();
                     }
+                    _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = "M3Service initializing" });
 
                     _serverProxy = new LCTServerMessageProxy();
                     // _fLogService.Info("Mars start Initalize Server...");
@@ -54,6 +60,8 @@ namespace Nova.LED.Modules.Box.Services
                     _serverProxy.NotifyRegisterErrEvent += OnNotifyRegisterErrEvent;
                     //_serverProxy.CompleteConnectAllController += OnCompleteConnectAllController;
                     _serverProxy.EquipmentChangeEvent += OnEquipmentChangeEvent;
+
+                    _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = "M3Service initialization completed" });
 
                     if (RegisterToServer())
                     {
@@ -125,6 +133,7 @@ namespace Nova.LED.Modules.Box.Services
         private void OnEquipmentChangeEvent(object sender, EventArgs e)
         {
             //throw new NotImplementedException();
+            _eventAggregator.GetEvent<BoxInfoUpdateEvent>().Publish("Changed");
         }
 
         private void OnCompleteConnectEquipment(object O0lO0l, ConnectEquipmentEventArgs O)
@@ -139,18 +148,15 @@ namespace Nova.LED.Modules.Box.Services
             bool res = false;
             try
             {
+                _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = "Connecting M3Service" });
                 res = ((LCTServerMessageProxy)_serverProxy).Register(SERVER_FORM_NAME, out serverVer);
-
-                //string msg = "连接服务结果：" + res.ToString();
-                //_fLogService.Info(msg);
                 if (res)
                 {
-                    //msg = "连接到底层服务,服务版本:" + serverVer;
-                    //_fLogService.Debug(msg);
-                    //_reRegisterTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+                    _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = "Connected M3Services" });
                 }
                 else
                 {
+                    _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent { Message = "M3Services Connection failed" });
                     //_reRegisterTimer.Change(7000, 7000);
                 }
                 return res;

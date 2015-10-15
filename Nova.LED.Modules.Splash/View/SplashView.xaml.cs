@@ -30,7 +30,13 @@ namespace Nova.LED.Modules.Splash.View
         {
             InitializeComponent();
             this.DataContext = viewModel;
+            this.Closed += SplashView_Closed;
             this.UIDispatcher = Dispatcher.CurrentDispatcher;
+        }
+
+        void SplashView_Closed(object sender, EventArgs e)
+        {
+            
         }
 
         [Export]

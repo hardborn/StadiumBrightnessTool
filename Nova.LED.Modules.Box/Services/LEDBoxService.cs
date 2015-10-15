@@ -16,6 +16,8 @@ using System.Windows.Threading;
 namespace Nova.LED.Modules.Box.Services
 {
     [Export(typeof(ILEDBoxService))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
+
     public class LEDBoxService : ILEDBoxService
     {
 
@@ -25,59 +27,29 @@ namespace Nova.LED.Modules.Box.Services
         private M3LCTServiceProxy _LCTService;
         private IEventAggregator _eventAggregator;
 
-        private AutoResetEvent _waitForReadData;
+       // private AutoResetEvent _waitForReadData;
 
         [ImportingConstructor]
         public LEDBoxService(M3LCTServiceProxy serviceProxy,IEventAggregator eventAggregator)
         {
             _LCTService = serviceProxy;
             _eventAggregator = eventAggregator;
-            InitializeLEDBox();
+            _eventAggregator.GetEvent<BoxInfoUpdateEvent>().Subscribe(UpdateBoxInfo);
+
+            //InitializeLEDBox();
+        }
+
+        private void UpdateBoxInfo(string obj)
+        {
+          if (BoxUpdated != null)
+          {
+              BoxUpdated(this, null);
+          }
         }
 
         public void InitializeLEDBox()
         {
-            _waitForReadData = new AutoResetEvent(false);
-            _LCTService.ReadCOMHWBaseInfoAsync((info, o) =>
-                {
-                    if (info == null || info.AllInfo == null || info.AllInfo.AllInfoDict == null)
-                    {
-                        return;
-                    }
-
-                    _eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent() { Message = "Get LED Boxes Data" });
-                    var currentCOMAndHWBaseInfo = info.AllInfo.AllInfoDict.ElementAt(0);
-                    var currentHWBaseInfo = currentCOMAndHWBaseInfo.Value;
-                    foreach (var item in currentHWBaseInfo.LEDDisplayInfoList)
-                    {
-                        foreach (var receivingCardItem in item.GetAreaScanBdList(new System.Drawing.Rectangle(item.GetScreenPosition(), item.GetScreenSize())))
-                        {
-                            LEDBox box = new LEDBox();
-                            box.Height = receivingCardItem.Height;
-                            box.Width = receivingCardItem.Width;
-                            box.X = receivingCardItem.X;
-                            box.Y = receivingCardItem.Y;
-                            box.XInPort = receivingCardItem.XInPort;
-                            box.YInPort = receivingCardItem.YInPort;
-                            box.COMIndex = currentCOMAndHWBaseInfo.Key;
-                            box.SenderIndex = receivingCardItem.SenderIndex;
-                            box.PortIndex = receivingCardItem.PortIndex;
-                            box.ConnectIndex = receivingCardItem.ConnectIndex;
-                            _boxes.Add(box);
-                        }
-                    }
-                    var boxGroupList = _boxes.GroupBy(x => new { x.SenderIndex, x.PortIndex })
-                                             .Select(y => new LEDBoxGroup()
-                                             {
-                                                 SenderIndex = y.Key.SenderIndex,
-                                                 PortIndex = y.Key.PortIndex,
-                                                 Boxes = y.ToList()
-                                             });
-                    _groups = new List<LEDBoxGroup>(boxGroupList);
-                    _waitForReadData.Set();
-                });
-
-            _waitForReadData.WaitOne(3000);
+            GetBoxGroupsAsync();
         }
 
         private string GetIndexLocation(string p1, byte p2, byte p3, ushort p4)
@@ -99,12 +71,65 @@ namespace Nova.LED.Modules.Box.Services
                                             && b.ConnectIndex == connectIndex);
         }
 
-        public IList<LEDBoxGroup> GetBoxGroups()
+        public Task<IList<LEDBoxGroup>> GetBoxGroupsAsync()
         {
-            return _groups;
+            var tcs = new TaskCompletionSource<IList<LEDBoxGroup>>();
+            _boxes.Clear();
+            _groups.Clear();
+            _LCTService.ReadCOMHWBaseInfoAsync((info, o) =>
+            {
+                if (info == null || info.AllInfo == null || info.AllInfo.AllInfoDict == null)
+                {
+                    //_waitForReadData.Set();
+                    return;
+                }
+
+                //_eventAggregator.GetEvent<MessageUpdateEvent>().Publish(new MessageUpdateEvent() { Message = "Get LED Boxes Data" });
+                var currentCOMAndHWBaseInfo = info.AllInfo.AllInfoDict.ElementAt(0);
+                var currentHWBaseInfo = currentCOMAndHWBaseInfo.Value;
+                if (currentHWBaseInfo == null || currentHWBaseInfo.LEDDisplayInfoList == null)
+                {
+                    // _waitForReadData.Set();
+                    return;
+                }
+                foreach (var item in currentHWBaseInfo.LEDDisplayInfoList)
+                {
+                    foreach (var receivingCardItem in item.GetAreaScanBdList(new System.Drawing.Rectangle(item.GetScreenPosition(), item.GetScreenSize())))
+                    {
+                        LEDBox box = new LEDBox();
+                        box.Height = receivingCardItem.Height;
+                        box.Width = receivingCardItem.Width;
+                        box.X = receivingCardItem.X;
+                        box.Y = receivingCardItem.Y;
+                        box.XInPort = receivingCardItem.XInPort;
+                        box.YInPort = receivingCardItem.YInPort;
+                        box.COMIndex = currentCOMAndHWBaseInfo.Key;
+                        box.SenderIndex = (byte)(receivingCardItem.SenderIndex);
+                        box.PortIndex = (byte)(receivingCardItem.PortIndex);
+                        box.ConnectIndex = (byte)(receivingCardItem.ConnectIndex);
+                        _boxes.Add(box);
+                    }
+                   
+                }
+                var boxGroupList = _boxes.GroupBy(x => new { x.COMIndex, x.SenderIndex, x.PortIndex })
+                                         .Select(y => new LEDBoxGroup()
+                                         {
+                                             COMIndex = y.Key.COMIndex,
+                                             SenderIndex = y.Key.SenderIndex,
+                                             PortIndex = y.Key.PortIndex,
+                                             Boxes = y.ToList()
+                                         });
+                _groups = new List<LEDBoxGroup>(boxGroupList);
+                tcs.SetResult(_groups);
+                //  _waitForReadData.Set();
+            });
+
+            return tcs.Task;
         }
 
 
-        public event EventHandler<LEDBoxGroupModelEventArgs> Updated;
+        public event EventHandler BoxUpdated;
+
+
     }
 }

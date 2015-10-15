@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Nova.LED.StadiumBrightnessTool.Controls;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -1720,5 +1722,8 @@ namespace System.Windows.Controls
         }
 
         #endregion
+
+
+       
     }
 }

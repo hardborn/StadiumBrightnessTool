@@ -50,27 +50,14 @@ namespace Nova.LED.StadiumBrightnessTool.Behaviors
                 Point mousePos = e.GetPosition(App.Current.MainWindow);
                 Vector diff = _startPoint - mousePos;
 
-                if (e.LeftButton == MouseButtonState.Pressed  &&
-                    (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                    Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance))
+                if (e.LeftButton == MouseButtonState.Pressed  )
+                    //&&
+                    //(Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                    //Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
                     IDragable dragObject = this.AssociatedObject.DataContext as IDragable;
                     if (dragObject != null)
                     {
-                        //GroupItem item = this.AssociatedObject.DataContext as GroupItem;
-                        //if (item != null)
-                        //{
-                        //    CombatElementViewModel element = new CombatElementViewModel(item);
-                        //    DataObject data = new DataObject();
-                        //    data.SetData(dragObject.DataType, element);
-                        //    DragDrop.DoDragDrop(this.AssociatedObject, data, DragDropEffects.Copy);
-                        //}
-                        //else if(item==null && (Keyboard.Modifiers & ModifierKeys.Control) != ModifierKeys.None)
-                        //{
-                        //    DataObject data = new DataObject();
-                        //    data.SetData(dragObject.DataType, this.AssociatedObject.DataContext);
-                        //    DragDrop.DoDragDrop(this.AssociatedObject, data, DragDropEffects.Copy);
-                        //}
                         DataObject data = new DataObject();
                         data.SetData(dragObject.DataType, dragObject.Data);
                         DragDrop.DoDragDrop(this.AssociatedObject, data, DragDropEffects.Copy);

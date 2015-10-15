@@ -28,13 +28,14 @@ namespace Nova.LED.StadiumBrightnessTool
 
         private static void RunInDebugMode()
         {
+            AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledException;
             StadiumBrightnessBootstrapper bootstrapper = new StadiumBrightnessBootstrapper();
             bootstrapper.Run();
         }
 
         private static void RunInReleaseMode()
         {
-            //AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledException;
             try
             {
                 StadiumBrightnessBootstrapper bootstrapper = new StadiumBrightnessBootstrapper();
@@ -44,6 +45,11 @@ namespace Nova.LED.StadiumBrightnessTool
             {
                 // HandleException(ex);
             }
+        }
+
+        private static void AppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
     }

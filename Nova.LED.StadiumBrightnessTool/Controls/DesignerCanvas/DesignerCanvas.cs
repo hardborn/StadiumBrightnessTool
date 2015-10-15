@@ -58,15 +58,15 @@ namespace Nova.LED.StadiumBrightnessTool.Controls
             if (this.rubberbandSelectionStartPoint.HasValue)
             {
                 // create rubberband adorner
-                AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
-                if (adornerLayer != null)
-                {
-                    RubberbandAdorner adorner = new RubberbandAdorner(this, rubberbandSelectionStartPoint);
-                    if (adorner != null)
-                    {
-                        adornerLayer.Add(adorner);
-                    }
-                }
+                //AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
+                //if (adornerLayer != null)
+                //{
+                //    RubberbandAdorner adorner  = new RubberbandAdorner(this, rubberbandSelectionStartPoint);
+                //    if (adorner != null)
+                //    {
+                //        adornerLayer.Add(adorner);
+                //    }
+                //}
             }
             e.Handled = true;
         }

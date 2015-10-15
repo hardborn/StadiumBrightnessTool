@@ -31,10 +31,10 @@ namespace M3LCTService.Test
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            _serviceProxy = new M3LCTServiceProxy(this.Dispatcher);
-            _serviceProxy.InitalizeServerProxy();
-            _serviceProxy.RegisterToServer();
-            _serviceProxy.LoadAllComBaseInfoFromHW();
+            //_serviceProxy = new M3LCTServiceProxy(this.Dispatcher,);
+            //_serviceProxy.InitalizeServerProxy();
+            //_serviceProxy.RegisterToServer();
+            //_serviceProxy.LoadAllComBaseInfoFromHW();
         }
 
 
