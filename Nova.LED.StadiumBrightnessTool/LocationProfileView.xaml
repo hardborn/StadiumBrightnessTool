@@ -289,7 +289,7 @@
 
                 <!--  Style="{StaticResource Heading2}"  -->
                 <ListBox Background="WhiteSmoke"
-                         ItemsSource="{Binding BoxGroupsToolItem}"
+                         ItemsSource="{Binding BoxGroupsToolItem}" 
                          SelectedItem="{Binding CurrentBoxGroupToolItem}"
                          SnapsToDevicePixels="True">
                     <ListBox.ItemTemplate>
