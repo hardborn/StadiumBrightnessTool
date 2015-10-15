@@ -24,6 +24,7 @@ namespace Nova.LED.StadiumBrightnessTool
      [Export(typeof(IShell))]
     public partial class Shell : MetroWindow, IShell
     {
+
          public Shell()
         {
             InitializeComponent();
